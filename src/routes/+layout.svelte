@@ -1,14 +1,34 @@
 <script lang="ts">
-    import '../app.css'
     import Icons from "$lib/components/Icons.svelte";
-    import {getMessages} from "$lib/stores/message.js";
+    import {getMessages, grab, isGrab as isGrabStore} from "$lib/stores/message.js";
+    import {onMount} from "svelte";
+    import {page} from "$app/stores"
+    import '../app.css';
 
-    const grab = () => {
-
-    }
+    let isGrab = false;
+    isGrabStore.subscribe(val => isGrab = val)
 
     const get = async () => {
         await getMessages(search)
+    }
+
+    let hidden = true;
+
+    onMount(() => {
+        window.addEventListener("scroll", () => {
+            const scrollHeight = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollHeight > 200) {
+                if (hidden == true) {
+                    hidden = false;
+                }
+            } else if (hidden == false) {
+                hidden = true;
+            }
+        });
+    })
+
+    const toTop = () => {
+        window.scrollTo({top: 0, behavior: "smooth"});
     }
 
     let search: string = ''
@@ -16,22 +36,45 @@
 
 <Icons/>
 <div class="container mx-auto">
-    <nav class="navbar navbar-expand-lg bg-base-200">
+    <nav class="navbar navbar-expand-lg bg-base-200 mb-8">
         <div class="navbar-start">
-            <a class="btn btn-ghost" href="/">Главная</a>
-            <a class="btn btn-ghost" href="/about">Пользователи</a>
+            <a class="btn" class:btn-ghost={$page.url.pathname !== '/'} class:btn-primary="{$page.url.pathname === '/'}"
+               href="/">Главная</a>
+
+            <a class="btn" class:btn-ghost={$page.url.pathname !== '/users'}
+               class:btn-primary="{$page.url.pathname === '/users'}"
+               href="/users">Пользователи</a>
         </div>
-        <div class="navbar-center">
-            <form on:submit={get} class="flex flex-col mt-3 lg:w-1/3">
-                <div class="join">
-                    <input bind:value={search} placeholder="Текст" class="input input-sm input-bordered input-primary join-item"/>
-                    <button class="btn btn-primary btn-sm join-item">Поиск</button>
-                </div>
-            </form>
-        </div>
+        {#if $page.url.pathname === '/'}
+            <div class="navbar-center">
+                <form on:submit={get} class="flex flex-col lg:w-1/3">
+                    <div class="join">
+                        <input bind:value={search} placeholder="Текст"
+                               class="input input-sm input-bordered input-primary join-item"/>
+                        <button class="btn btn-primary btn-sm join-item">Поиск</button>
+                    </div>
+                </form>
+            </div>
+        {/if}
         <div class="navbar-end">
-            <button class="btn btn-ghost" on:click={grab}>Получить</button>
+            <form on:submit={grab}>
+                <button class="btn btn-ghost">
+                    Получить
+                    {#if isGrab}
+                        <span class="loading loading-ring"></span>
+                    {/if}
+                </button>
+            </form>
         </div>
     </nav>
     <slot/>
+</div>
+
+
+<div class="fixed bottom-8 right-8" class:hidden={hidden}>
+    <button class="btn btn-circle btn-primary" on:click={toTop}>
+        <svg height="24" width="24" viewBox="0 0 24 24">
+            <use xlink:href="#top"></use>
+        </svg>
+    </button>
 </div>

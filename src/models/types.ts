@@ -10,6 +10,7 @@ export interface VkMessage {
   images: string[]
   userReposted: boolean
   userLikes: boolean
+  parseDate: string;
 }
 
 export interface GetMessagesResponse {
