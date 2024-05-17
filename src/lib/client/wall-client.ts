@@ -29,14 +29,21 @@ interface CopyHistory {
     owner_id: number
 }
 
-interface WallGetResponse { response: { items: Message[], groups: Group[], profiles: Profile[] } }
+interface WallGetResponse {
+    response: {
+        items: Message[],
+        groups: Group[],
+        profiles: Profile[]
+    },
+    error: { error_code: number, error_msg: string }
+}
 
 interface WallRepostResponse {
 
 }
 
 export class WallClient {
-    async getById(ids: {id: number, owner_id: number}[]) : Promise<WallGetResponse> {
+    async getById(ids: { id: number, owner_id: number }[]): Promise<WallGetResponse> {
         const url = new URLSearchParams()
         url.set("posts", ids.map(e => `${e.owner_id}_${e.id}`).join(","))
         url.set("extended", "1")

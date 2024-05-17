@@ -1,18 +1,15 @@
 <script lang="ts">
-    import {onMount} from "svelte";
+    let {images = $bindable(), key}: { images: string[], key: string } = $props();
 
-    export let images: string[];
-    export let key: string;
-
-    let imgs: string[] = []
+    let imgs = $state([] as string[])
 
     let carousel: HTMLElement = null;
-    onMount(() => {
+    $effect(() => {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
 
-                    imgs = [...images]
+                    imgs = [...images || []]
                     observer.disconnect()
                 }
             })
@@ -21,9 +18,14 @@
         })
 
         observer.observe(carousel)
+
+        return () => {
+            observer.disconnect()
+        }
     })
 
 </script>
+
 <div bind:this={carousel} class="carousel">
     {#if imgs !== undefined && imgs !== null && imgs.length > 0}
         {#each imgs as image, i}

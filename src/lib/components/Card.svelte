@@ -3,19 +3,19 @@
     import CardImage from "$lib/components/CardImage.svelte";
     import {repost as storeRepost, like as storeLike} from "$lib/stores/message";
 
-    export let message: VkMessage
+    const {message = $bindable()} : {message: VkMessage} = $props()
 
-    let key = `${message.ownerId}_${message.id}`
+    let key = $state(`${message.ownerId}_${message.id}`)
 
-    let isNew = (Date.now() - Date.parse(message.parseDate)) / 1000 / 60 / 60 < 6
+    const isNew = (Date.now() - Date.parse(message.parseDate)) / 1000 / 60 / 60 < 6
 
     const getText = (text: string) => {
         return text.replace(/\[((id|club)\d+)\|(.*?)\]/gm, `<a href="https://vk.com/$1" class="text-primary" target="_blank">$3</a>`)
     }
 
-    let isLike = false;
+    let isLike = $state(false);
 
-    let isRepost = false;
+    let isRepost = $state(false);
 
     const repost = async () => {
         try {
@@ -53,13 +53,13 @@
             </a>
         </span>
         <div class="font-light">{new Date(message.date).toLocaleString()}</div>
-        <CardImage bind:images={message.images} bind:key={key}/>
-        <pre class="max-h-72 overflow-auto whitespace-pre-line text-wrap text-xs">
+        <CardImage images={message.images} key={key}/>
+        <pre class="max-h-72 overflow-auto whitespace-pre-line text-wrap text-xs h-screen">
             {@html getText(message.text)}
         </pre>
         <div class="card-actions">
             <div class="card-actions">
-                <button class="btn btn-sm btn-primary flex {message.userLikes ? '' : 'btn-outline'}" on:click={like}>
+                <button class="btn btn-sm btn-primary flex {message.userLikes ? '' : 'btn-outline'}" onclick={like}>
                     {#if isLike}
                         <span class="loading loading-ring"></span>
                     {:else}
@@ -70,7 +70,7 @@
                     {message.likesCount}
                 </button>
                 <button class="btn btn-sm btn-secondary flex {message.userReposted ? '' : 'btn-outline'}"
-                        on:click={repost}>
+                        onclick={repost}>
                     {#if isRepost}
                         <span class="loading loading-ring"></span>
                     {:else}

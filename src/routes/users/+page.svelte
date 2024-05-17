@@ -16,10 +16,12 @@
 
 <div class="flex flex-col w-full lg:w-1/2 gap-6">
     {#each data.users as user}
-        <a class="flex gap-4 items-center" href="https://vk.com/id{user.id}" target="_blank">
-            <img alt="{user.name}" class="avatar rounded-full" src="{user.avatar}"/>
-            <div>{user.name}</div>
-            <button class="btn btn-circle btn-error btn-sm btn-ghost" on:click={() => remove(user.id)}>X</button>
-        </a>
+        <div class="flex gap-4 items-center">
+            <a href="https://vk.com/id{user.id}" target="_blank">
+                <img alt="{user.name}" class="avatar rounded-full mr-3" src="{user.avatar}"/>
+                <span>{user.name}</span>
+            </a>
+            <button class="btn btn-circle btn-error btn-sm btn-ghost" onclick={() => remove(user.id)}>X</button>
+        </div>
     {/each}
 </div>

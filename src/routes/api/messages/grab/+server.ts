@@ -15,6 +15,11 @@ export async function POST({request}) {
 
             const searchResponse = await wallClient.wallGet(user, 50, i * 50);
 
+            if (searchResponse.error != null) {
+                console.error(searchResponse.error);
+                continue;
+            }
+
             const ids = searchResponse.response.items
                 .filter(e => e.copy_history?.length > 0)
                 .map(e => e.copy_history[0])

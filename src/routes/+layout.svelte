@@ -1,20 +1,20 @@
 <script lang="ts">
     import Icons from "$lib/components/Icons.svelte";
     import {getMessages, grab, isGrab as isGrabStore} from "$lib/stores/message.js";
-    import {onMount} from "svelte";
     import {page} from "$app/stores"
     import '../app.css';
+    import type {Snippet} from "svelte";
 
-    let isGrab = false;
+    let isGrab = $state(false);
     isGrabStore.subscribe(val => isGrab = val)
 
     const get = async () => {
         await getMessages(search)
     }
 
-    let hidden = true;
+    let hidden = $state(true);
 
-    onMount(() => {
+    $effect(() => {
         window.addEventListener("scroll", () => {
             const scrollHeight = window.pageYOffset || document.documentElement.scrollTop;
             if (scrollHeight > 200) {
@@ -31,7 +31,9 @@
         window.scrollTo({top: 0, behavior: "smooth"});
     }
 
-    let search: string = ''
+    let search = $state('')
+
+    let {children}: {children: Snippet} = $props();
 </script>
 
 <Icons/>
@@ -47,7 +49,7 @@
         </div>
         {#if $page.url.pathname === '/'}
             <div class="navbar-center">
-                <form on:submit={get} class="flex flex-col lg:w-1/3">
+                <form onsubmit={get} class="flex flex-col lg:w-1/3">
                     <div class="join">
                         <input bind:value={search} placeholder="Текст"
                                class="input input-sm input-bordered input-primary join-item"/>
@@ -57,7 +59,7 @@
             </div>
         {/if}
         <div class="navbar-end">
-            <form on:submit={grab}>
+            <form onsubmit={grab}>
                 <button class="btn btn-ghost">
                     Получить
                     {#if isGrab}
@@ -67,12 +69,12 @@
             </form>
         </div>
     </nav>
-    <slot/>
+    {@render children()}
 </div>
 
 
 <div class="fixed bottom-8 right-8" class:hidden={hidden}>
-    <button class="btn btn-circle btn-primary" on:click={toTop}>
+    <button class="btn btn-circle btn-primary" onclick={toTop}>
         <svg height="24" width="24" viewBox="0 0 24 24">
             <use xlink:href="#top"></use>
         </svg>
