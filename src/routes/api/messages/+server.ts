@@ -1,9 +1,10 @@
 import {error, json} from "@sveltejs/kit";
 import {WallClient} from "$lib/client/wall-client";
+import {GroupClient} from "$lib/client/group-client";
 
 export async function POST({request}) {
 
-    const data = await request.json() as { ownerId: number, id: number };
+    const data = await request.json() as { ownerId: number, id: number, groups: number[] };
 
     if (!data) {
         return error(400, {message: "invalid request"})
@@ -11,6 +12,11 @@ export async function POST({request}) {
 
     const client = new WallClient();
     await client.repost(data.ownerId, data.id)
+    
+    const groupClient = new GroupClient();
+    for (let i of data.groups) {
+        await groupClient.join(i)
+    }
 
     return json({})
 }
@@ -24,4 +30,6 @@ export async function PUT({request}) {
 
     const client = new WallClient();
     await client.like(data.ownerId, data.id);
+
+    return json({})
 }

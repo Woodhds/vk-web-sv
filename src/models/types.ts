@@ -1,38 +1,39 @@
 export interface VkMessage {
-  id: number
-  ownerId: number
-  fromId: number
-  likesCount: number
-  repostsCount: number
-  date: string
-  owner: string
-  text: string
-  images: string[]
-  userReposted: boolean
-  userLikes: boolean
-  parseDate: string;
+    id: number
+    ownerId: number
+    fromId: number
+    likesCount: number
+    repostsCount: number
+    date: string
+    owner: string
+    text: string
+    images: string[]
+    userReposted: boolean
+    userLikes: boolean
+    parseDate: string;
 }
 
 export interface GetMessagesResponse {
-  messages: VkMessage[]
+    messages: VkMessage[]
 }
 
 export interface VkUser {
-  id: number
-  name: string
-  avatar: string
+    id: number
+    name: string
+    avatar: string
 }
 
 export interface VkUserListResponse {
-  users: VkUser[]
+    users: VkUser[]
 }
 
 export interface VkUserGroup {
-  id: number;
-  name: string;
-  avatar: string;
+    id: number;
+    name: string;
+    avatar: string;
+    is_member: 1 | 0;
 }
 
 export interface VkGroupGetResponse {
-  groups: VkUserGroup[]
+    groups: VkUserGroup[]
 }

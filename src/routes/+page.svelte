@@ -13,10 +13,10 @@
     isLoading.subscribe(val => isLoad = val)
 
 </script>
-<div class="grid grid-cols-3 gap-8">
+<div class="grid grid-cols-3 gap-4">
     {#if !isLoad}
-        {#each messages as _, i}
-            <Card bind:message="{messages[i]}"/>
+        {#each messages as mes}
+            <Card message="{mes}"/>
         {/each}
     {:else}
         {#each new Array(6) as _}

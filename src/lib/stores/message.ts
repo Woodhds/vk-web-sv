@@ -38,21 +38,17 @@ export const grab = async () => {
     }
 }
 
-export const repost = async (ownerId: number, id: number) => {
+export const repost = async (ownerId: number, id: number, groups: number[]) => {
     await fetch(`api/messages`, {
         method: 'POST',
-        body: JSON.stringify({ownerId, id}),
+        body: JSON.stringify({ownerId, id, groups}),
     })
 
     _messages.update(d => {
-        const message = d.filter(f => id === f.id && ownerId === f.ownerId);
-        const ids = message.map((a) => `${a.id}_${a.ownerId}`);
-        for (let i = 0; i < d.length; i++) {
-            for (let j = 0; j < ids.length; j++) {
-                if (`${d[i].id}_${d[i].ownerId}` === ids[j]) {
-                    d[i].userReposted = true;
-                }
-            }
+        const idx = d.findIndex(f => id === f.id && ownerId === f.ownerId);
+
+        if (idx >= 0) {
+            d.splice(idx, 1, {...d[idx], userReposted: true} as VkMessage);
         }
 
         return d;
@@ -66,10 +62,10 @@ export const like = async (ownerId: number, id: number) => {
     })
 
     _messages.update(d => {
-        const message = d.find(f => f.ownerId === ownerId && f.id === id);
+        const idx = d.findIndex(f => f.ownerId === ownerId && f.id === id);
 
-        if (message) {
-            message.userLikes = true;
+        if (idx >= 0) {
+            d.splice(idx, 1, {...d[idx], userLikes: true} as VkMessage);
         }
 
         return d;

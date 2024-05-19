@@ -3,7 +3,7 @@
     import CardImage from "$lib/components/CardImage.svelte";
     import {repost as storeRepost, like as storeLike} from "$lib/stores/message";
 
-    const {message = $bindable()} : {message: VkMessage} = $props()
+    const {message = $bindable()}: { message: VkMessage } = $props()
 
     let key = $state(`${message.ownerId}_${message.id}`)
 
@@ -21,7 +21,7 @@
         try {
             isRepost = true;
 
-            await storeRepost(message.ownerId, message.id);
+            await storeRepost(message.ownerId, message.id, message.ownerId < 0 ? [message.ownerId] : []);
         } finally {
             isRepost = false;
         }
@@ -59,7 +59,7 @@
         </pre>
         <div class="card-actions">
             <div class="card-actions">
-                <button class="btn btn-sm btn-primary flex {message.userLikes ? '' : 'btn-outline'}" onclick={like}>
+                <button class:btn-outline={!message.userLikes} class="btn btn-sm btn-primary flex" onclick={like}>
                     {#if isLike}
                         <span class="loading loading-ring"></span>
                     {:else}
@@ -69,7 +69,7 @@
                     {/if}
                     {message.likesCount}
                 </button>
-                <button class="btn btn-sm btn-secondary flex {message.userReposted ? '' : 'btn-outline'}"
+                <button class:btn-outline={!message.userReposted} class="btn btn-sm btn-secondary flex"
                         onclick={repost}>
                     {#if isRepost}
                         <span class="loading loading-ring"></span>

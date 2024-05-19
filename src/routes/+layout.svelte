@@ -63,7 +63,7 @@
                 <button class="btn btn-ghost">
                     Получить
                     {#if isGrab}
-                        <span class="loading loading-ring"></span>
+                        <span class="loading loading-ring bg-primary"></span>
                     {/if}
                 </button>
             </form>
