@@ -13,9 +13,9 @@
     isLoading.subscribe(val => isLoad = val)
 
 </script>
-<div class="grid grid-cols-3 gap-4">
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-y-4 gap-x-0 md:gap-x-4">
     {#if !isLoad}
-        {#each messages as mes}
+        {#each messages as mes (mes.id)}
             <Card message="{mes}"/>
         {/each}
     {:else}
