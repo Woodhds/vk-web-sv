@@ -21,7 +21,7 @@
         try {
             isRepost = true;
 
-            await storeRepost(message.ownerId, message.id, message.ownerId < 0 ? [message.ownerId] : []);
+            await storeRepost(message.ownerId, message.id, message.ownerId < 0 ? [-message.ownerId] : []);
         } finally {
             isRepost = false;
         }
