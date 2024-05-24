@@ -21,7 +21,11 @@
                     <img alt="{user.name}" class="avatar rounded-full mr-3" src="{user.avatar}"/>
                     <span>{user.name}</span>
                 </a>
-                <button class="btn btn-circle btn-error btn-sm btn-ghost" onclick={() => remove(user.id)}>X</button>
+                <button class="btn btn-circle text-error btn-sm btn-ghost" onclick={() => remove(user.id)}>
+                    <svg height="24" width="24" viewBox="200 200 1280 1280">
+                        <use xlink:href="#cross"></use>
+                    </svg>
+                </button>
             </div>
         {/each}
     {/if}

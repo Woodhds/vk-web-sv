@@ -14,18 +14,16 @@
 
     let hidden = $state(true);
 
-    $effect(() => {
-        window.addEventListener("scroll", () => {
-            const scrollHeight = window.pageYOffset || document.documentElement.scrollTop;
-            if (scrollHeight > 200) {
-                if (hidden == true) {
-                    hidden = false;
-                }
-            } else if (hidden == false) {
-                hidden = true;
+    const addScroll = () => {
+        const scrollHeight = document.documentElement.scrollTop;
+        if (scrollHeight > 200) {
+            if (hidden == true) {
+                hidden = false;
             }
-        });
-    })
+        } else if (hidden == false) {
+            hidden = true;
+        }
+    }
 
     const toTop = () => {
         window.scrollTo({top: 0, behavior: "smooth"});
@@ -33,19 +31,56 @@
 
     let search = $state('')
 
-    let {children}: {children: Snippet} = $props();
+    let {children}: { children: Snippet } = $props();
 </script>
 
 <Icons/>
 <div class="container mx-auto">
     <nav class="navbar navbar-expand-lg bg-base-200 mb-8">
         <div class="navbar-start">
-            <a class="btn" class:btn-ghost={$page.url.pathname !== '/'} class:btn-primary="{$page.url.pathname === '/'}"
-               href="/">Главная</a>
+            <div class="dropdown">
+                <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4 6h16M4 12h8m-8 6h16"/>
+                    </svg>
+                </div>
+                <ul tabindex="0"
+                    class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                    <li>
+                        <a class="btn" class:btn-ghost={$page.url.pathname !== '/'}
+                           class:btn-primary="{$page.url.pathname === '/'}"
+                           href="/">Главная</a>
+                    </li>
 
-            <a class="btn" class:btn-ghost={$page.url.pathname !== '/users'}
-               class:btn-primary="{$page.url.pathname === '/users'}"
-               href="/users">Пользователи</a>
+                    <li>
+                        <a class="btn" class:btn-ghost={$page.url.pathname !== '/users'}
+                           class:btn-primary="{$page.url.pathname === '/users'}"
+                           href="/users">Пользователи</a>
+                    </li>
+                    <li>
+                        {#if isGrab}
+                            <span class="loading loading-ring bg-primary"></span>
+                        {:else }
+                            <a onclick={grab} class="btn btn-ghost">
+                                Получить
+                            </a>
+                        {/if}
+                    </li>
+                </ul>
+            </div>
+
+            <div class="lg:flex hidden">
+                <a class="btn"
+                   class:btn-ghost={$page.url.pathname !== '/'}
+                   class:btn-primary="{$page.url.pathname === '/'}"
+                   href="/">Главная</a>
+
+                <a class="btn" class:btn-ghost={$page.url.pathname !== '/users'}
+                   class:btn-primary="{$page.url.pathname === '/users'}"
+                   href="/users">Пользователи</a>
+            </div>
         </div>
         {#if $page.url.pathname === '/'}
             <div class="navbar-center">
@@ -58,20 +93,21 @@
                 </form>
             </div>
         {/if}
-        <div class="navbar-end">
-            <form onsubmit={grab}>
-                <button class="btn btn-ghost">
+        <div class="navbar-end hidden lg:flex">
+            {#if isGrab}
+                <span class="loading loading-ring bg-primary"></span>
+            {:else }
+                <a onclick={grab} class="btn btn-ghost">
                     Получить
-                    {#if isGrab}
-                        <span class="loading loading-ring bg-primary"></span>
-                    {/if}
-                </button>
-            </form>
+                </a>
+            {/if}
         </div>
     </nav>
     {@render children()}
 </div>
 
+
+<svelte:document on:scroll={addScroll}></svelte:document>
 
 <div class="fixed bottom-8 right-8" class:hidden={hidden}>
     <button class="btn btn-circle btn-primary" onclick={toTop}>

@@ -48,7 +48,7 @@ export const repost = async (ownerId: number, id: number, groups: number[]) => {
         const idx = d.findIndex(f => id === f.id && ownerId === f.ownerId);
 
         if (idx >= 0) {
-            d.splice(idx, 1, {...d[idx], userReposted: true} as VkMessage);
+            d.splice(idx, 1, {...d[idx], userReposted: true, userLikes: true} as VkMessage);
         }
 
         return d;

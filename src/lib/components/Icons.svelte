@@ -44,7 +44,15 @@
 	c9.086-7.861,17.596-16.37,25.456-25.456L85.85,60.394z"/>
     </symbol>
     <symbol id="top" fill="currentColor" shape-rendering="geometricPrecision" text-rendering="geometricPrecision"
-         image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 299.283">
+            image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 299.283">
         <path d="M75.334 286.691c-64.764 36.929-96.186-15.595-60.203-51.975L215.997 25.104c33.472-33.472 46.534-33.472 80.006 0l200.866 209.612c35.983 36.38 4.561 88.904-60.203 51.975L256 189.339 75.334 286.691z"/>
     </symbol>
+    <symbol id="cross" fill="currentColor"
+         width="1280.000000pt" height="1280.000000pt" viewBox="0 0 1280.000000 1280.000000">
+        <g fill-rule="evenodd" transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)"
+            stroke="none">
+            <path d="M3137 9659 l-537 -539 1360 -1360 1360 -1360 -1360 -1360 -1360 -1360 540 -540 540 -540 1360 1360 1360 1360 1360 -1360 1360 -1360 540 540 540 540 -1360 1360 -1360 1360 1360 1360 1360 1360 -540 540 -540 540 -1360 -1360 -1360 -1360 -1360 1360 c-748 748 -1361 1360 -1362 1359 -2 0 -245 -243 -541 -540z"/>
+        </g>
+    </symbol>
+
 </svg>

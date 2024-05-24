@@ -10,7 +10,7 @@
     const isNew = (Date.now() - Date.parse(message.parseDate)) / 1000 / 60 / 60 < 6
 
     const getText = (text: string) => {
-        return text.replace(/\[((id|club)\d+)\|(.*?)\]/gm, `<a href="https://vk.com/$1" class="text-primary" target="_blank">$3</a>`)
+        return text.replace(/\[((id|club)\d+)\|(.*?)\]/gm, `<a href="https://vk.com/$1" class="link-primary" target="_blank">$3</a>`)
     }
 
     let isLike = $state(false);
@@ -54,7 +54,7 @@
         </span>
         <div class="font-light">{new Date(message.date).toLocaleString()}</div>
         <CardImage images={message.images} key={key}/>
-        <pre class="max-h-72 overflow-auto whitespace-pre-line text-wrap text-xs h-screen">
+        <pre class="max-h-64 overflow-auto whitespace-pre-line text-wrap text-xs h-screen">
             {@html getText(message.text)}
         </pre>
         <div class="card-actions">
@@ -80,7 +80,6 @@
                     {/if}
                     {message.repostsCount}
                 </button>
-
             </div>
         </div>
     </div>
