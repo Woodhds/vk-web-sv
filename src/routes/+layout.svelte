@@ -49,23 +49,26 @@
                 <ul tabindex="0"
                     class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                     <li>
-                        <a class="btn" class:btn-ghost={$page.url.pathname !== '/'}
+                        <a class="btn"
+                           class:btn-ghost={$page.url.pathname !== '/'}
                            class:btn-primary="{$page.url.pathname === '/'}"
                            href="/">Главная</a>
                     </li>
-
                     <li>
-                        <a class="btn" class:btn-ghost={$page.url.pathname !== '/users'}
+                        <a class="btn"
+                           class:btn-ghost={$page.url.pathname !== '/users'}
                            class:btn-primary="{$page.url.pathname === '/users'}"
                            href="/users">Пользователи</a>
                     </li>
                     <li>
                         {#if isGrab}
-                            <span class="loading loading-ring bg-primary"></span>
-                        {:else }
-                            <a onclick={grab} class="btn btn-ghost">
+                            <div class="px-5">
+                                <span class="loading loading-ring bg-primary"></span>
+                            </div>
+                        {:else}
+                            <button onclick={grab} class="btn btn-ghost">
                                 Получить
-                            </a>
+                            </button>
                         {/if}
                     </li>
                 </ul>
@@ -95,11 +98,13 @@
         {/if}
         <div class="navbar-end hidden lg:flex">
             {#if isGrab}
-                <span class="loading loading-ring bg-primary"></span>
-            {:else }
-                <a onclick={grab} class="btn btn-ghost">
+                <div class="px-5">
+                    <span class="loading loading-ring bg-primary"></span>
+                </div>
+            {:else}
+                <button onclick={grab} class="btn btn-ghost">
                     Получить
-                </a>
+                </button>
             {/if}
         </div>
     </nav>
