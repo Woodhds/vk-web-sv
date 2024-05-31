@@ -25,3 +25,7 @@
 
     {/if}
 </div>
+
+<svelte:head>
+    <title>Competitions</title>
+</svelte:head>
