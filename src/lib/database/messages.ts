@@ -3,7 +3,7 @@ import type {MessageEntity} from "../../models/entities";
 
 class MessageRepository {
     async search(search: string) {
-        const searchText = `'${search}'`
+        const searchText = `'${search}'`.toLowerCase()
 
         const {rows, command, fields} = await sql.query(`
             SELECT
@@ -56,7 +56,7 @@ class MessageRepository {
             AS
             $$
                 BEGIN
-                INSERT INTO messages_search (id, owner_id, text) VALUES (new.id, new.owner_id, new.text);
+                INSERT INTO messages_search (id, owner_id, text) VALUES (new.id, new.owner_id, lower(new.text COLLATE "unicode"));
                 
                 RETURN NEW;
                 END;
