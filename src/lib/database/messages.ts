@@ -3,7 +3,7 @@ import type {MessageEntity} from "../../models/entities";
 
 class MessageRepository {
     async search(search: string) {
-        const searchText = `'${search}'`
+        const searchText = `'${search}'`.toLowerCase()
 
         const {rows} = await sql.query(`
             SELECT
@@ -24,6 +24,53 @@ class MessageRepository {
         await sql`insert into messages (id, owner_id, date, text, reposted_from) VALUES (
             ${message.id}, ${message.owner_id}, now(), ${message.text}, ${message.reposted_from}) 
             ON CONFLICT (id, owner_id) DO NOTHING`
+    }
+
+    async migrate() {
+        // await sql`
+        //     CREATE TABLE IF NOT EXISTS messages
+        //     (
+        //         id           BigInt,
+        //         date         Timestamp without time zone,
+        //         owner_id      BigInt,
+        //         reposted_from BigInt,
+        //         Text         text,
+        //         Primary Key (id, owner_id)
+        //     );
+        //     `
+        // await sql`CREATE TABLE IF NOT EXISTS messages_search
+        //     (
+        //         id      BigInt,
+        //         owner_id BigInt,
+        //         text    text,
+        //         FOREIGN KEY (id, owner_id) REFERENCES messages (id, owner_id)
+        //     );
+        //     `
+        //
+        // await sql`CREATE INDEX IF NOT EXISTS idx_gin_messages_search on messages_search using gin(to_tsvector('russian', Text));`
+
+        await sql`
+            CREATE OR REPLACE FUNCTION insert_to_search_table()
+                RETURNS TRIGGER
+                LANGUAGE PLPGSQL
+            AS
+            $$
+                BEGIN
+                INSERT INTO messages_search (id, owner_id, text) VALUES (new.id, new.owner_id, lower(new.text COLLATE "unicode"));
+                
+                RETURN NEW;
+                END;
+            $$;
+            `
+        //
+        // await sql` DROP TRIGGER IF EXISTS TR_messages_AI on messages;`
+        //
+        // await sql`
+        //     CREATE TRIGGER TR_messages_AI AFTER INSERT on messages
+        //     FOR EACH ROW
+        //     EXECUTE PROCEDURE insert_to_search_table();
+        //
+        //  `
     }
 }
 
