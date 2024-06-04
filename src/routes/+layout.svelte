@@ -46,8 +46,7 @@
                               d="M4 6h16M4 12h8m-8 6h16"/>
                     </svg>
                 </div>
-                <ul tabindex="0"
-                    class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                <ul class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52" role="menu" tabindex="0">
                     <li>
                         <a class="btn"
                            class:btn-ghost={$page.url.pathname !== '/'}

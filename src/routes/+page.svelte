@@ -15,7 +15,7 @@
 </script>
 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-y-4 gap-x-0 md:gap-x-4">
     {#if !isLoad}
-        {#each messages as mes (mes.id)}
+        {#each messages as mes (`${mes.ownerId}_${mes.id}`)}
             <Card message="{mes}"/>
         {/each}
     {:else}

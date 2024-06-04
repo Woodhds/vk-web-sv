@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {VkMessage} from "../../models/types";
+    import type {VkAuthorizeResponse, VkMessage} from "../../models/types";
     import CardImage from "$lib/components/CardImage.svelte";
     import {repost as storeRepost, like as storeLike} from "$lib/stores/message";
 
@@ -21,7 +21,9 @@
         try {
             isRepost = true;
 
-            await storeRepost(message.ownerId, message.id, message.ownerId < 0 ? [-message.ownerId] : []);
+            const userData = JSON.parse(localStorage.getItem("access_token")) as VkAuthorizeResponse;
+
+            await storeRepost(message.ownerId, message.id, message.ownerId < 0 ? [-message.ownerId] : [], userData?.access_token);
         } finally {
             isRepost = false;
         }

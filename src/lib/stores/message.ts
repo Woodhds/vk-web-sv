@@ -38,10 +38,10 @@ export const grab = async () => {
     }
 }
 
-export const repost = async (ownerId: number, id: number, groups: number[]) => {
+export const repost = async (ownerId: number, id: number, groups: number[], accessToken: string | null = null) => {
     await fetch(`api/messages`, {
         method: 'POST',
-        body: JSON.stringify({ownerId, id, groups}),
+        body: JSON.stringify({ownerId, id, groups, access_token: accessToken}),
     })
 
     _messages.update(d => {

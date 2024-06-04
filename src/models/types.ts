@@ -13,27 +13,8 @@ export interface VkMessage {
     parseDate: string;
 }
 
-export interface GetMessagesResponse {
-    messages: VkMessage[]
-}
-
-export interface VkUser {
-    id: number
-    name: string
-    avatar: string
-}
-
-export interface VkUserListResponse {
-    users: VkUser[]
-}
-
-export interface VkUserGroup {
-    id: number;
-    name: string;
-    avatar: string;
-    is_member: 1 | 0;
-}
-
-export interface VkGroupGetResponse {
-    groups: VkUserGroup[]
+export interface VkAuthorizeResponse {
+    access_token: string;
+    error: string;
+    expires_in: string;
 }

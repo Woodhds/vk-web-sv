@@ -62,11 +62,11 @@ export class WallClient {
         return await baseClient.get<WallGetResponse>("wall.get?" + url.toString())
     }
 
-    async repost(ownerId: number, id: number) {
+    async repost(ownerId: number, id: number, access_token:string | null = null) {
         const url = new URLSearchParams()
         url.set("object", `wall${ownerId}_${id}`)
 
-        return await baseClient.post<void, WallRepostResponse>("wall.repost?" + url.toString(), null)
+        return await baseClient.post<void, WallRepostResponse>("wall.repost?" + url.toString(), null, access_token);
     }
 
     async like(ownerId: number, id: number) {
