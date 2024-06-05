@@ -3,7 +3,7 @@ import type {MessageEntity} from "../../models/entities";
 
 class MessageRepository {
     async search(search: string) {
-        const searchText = `'${search}'`.toLowerCase()
+        const searchText = `'${search}'`
 
         const {rows} = await sql.query(`
             SELECT
@@ -14,7 +14,7 @@ class MessageRepository {
             FROM messages
             inner join messages_search s on messages.id = s.id AND messages.owner_id = s.owner_id
             where s.text @@ phraseto_tsquery($1)
-            order by ts_rank(to_tsvector('russian', s.text), phraseto_tsquery($1)) desc;
+            order by ts_rank(to_tsvector(s.text), phraseto_tsquery($1)) desc;
         `, [searchText])
 
         return rows.map(e => ({id: e.id as number, owner_id: e.owner_id as number, text: e.text, date: e.date} as MessageEntity))
@@ -56,7 +56,7 @@ class MessageRepository {
             AS
             $$
                 BEGIN
-                INSERT INTO messages_search (id, owner_id, text) VALUES (new.id, new.owner_id, lower(new.text COLLATE "unicode"));
+                INSERT INTO messages_search (id, owner_id, text) VALUES (new.id, new.owner_id, new.text);
                 
                 RETURN NEW;
                 END;
