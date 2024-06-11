@@ -35,7 +35,7 @@
 <form class="mt-3" onsubmit={getToken}>
     <label class="form-control">
         Код
-        <input bind:value={code} class="input-sm input-bordered input-primary w-full md:w-1/3"/>
+        <input bind:value={code} class="input-sm input input-bordered input- input-primary w-full md:w-1/3"/>
     </label>
 
     <button class="btn btn-primary mt-3" type="submit">

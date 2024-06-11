@@ -46,7 +46,8 @@
                               d="M4 6h16M4 12h8m-8 6h16"/>
                     </svg>
                 </div>
-                <ul class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52" role="menu" tabindex="0">
+                <ul class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52" role="menu"
+                    tabindex="0">
                     <li>
                         <a class="btn"
                            class:btn-ghost={$page.url.pathname !== '/'}
@@ -58,6 +59,12 @@
                            class:btn-ghost={$page.url.pathname !== '/users'}
                            class:btn-primary="{$page.url.pathname === '/users'}"
                            href="/users">Пользователи</a>
+                    </li>
+                    <li>
+                        <a class="btn"
+                           class:btn-ghost={$page.url.pathname !== '/authorize'}
+                           class:btn-primary="{$page.url.pathname === '/authorize'}"
+                           href="/authorize">Авторизация</a>
                     </li>
                     <li>
                         {#if isGrab}
@@ -82,6 +89,10 @@
                 <a class="btn" class:btn-ghost={$page.url.pathname !== '/users'}
                    class:btn-primary="{$page.url.pathname === '/users'}"
                    href="/users">Пользователи</a>
+                <a class="btn"
+                   class:btn-ghost={$page.url.pathname !== '/authorize'}
+                   class:btn-primary="{$page.url.pathname === '/authorize'}"
+                   href="/authorize">Авторизация</a>
             </div>
         </div>
         {#if $page.url.pathname === '/'}

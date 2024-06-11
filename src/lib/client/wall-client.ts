@@ -9,7 +9,7 @@ interface Message {
     reposts: { user_reposted: 1 | 0, count: number }
     likes: { user_likes: 1 | 0, count: number },
     copy_history: CopyHistory[],
-    attachments: { type: string, photo: { sizes: { type: string, url: string }[] } }[]
+    attachments: { type: string, photo: { sizes: { type: string, url: string, width: number }[] } }[]
 }
 
 interface Group {

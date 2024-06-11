@@ -31,8 +31,9 @@ export async function POST({request}) {
                 repostsCount: e.reposts?.count ?? 0,
                 likesCount: e.likes?.count ?? 0,
                 userLikes: e.likes?.user_likes ?? false,
-                images: e.attachments?.filter(e => e.type === 'photo' && e.photo?.sizes?.length > 2)
-                    .map(e => e.photo.sizes[3].url),
+                images: e.attachments?.filter(e => e.type === 'photo')
+                    .map(e => e.photo.sizes.find(e => e.width > 200)?.url)
+                    .filter(e => !!e),
                 userReposted: e.reposts?.user_reposted ?? false,
                 fromId: e.from_id,
                 owner: data.response.groups?.find(z => z.id === -e.owner_id)?.name

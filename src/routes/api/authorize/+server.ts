@@ -1,5 +1,4 @@
 ﻿import {error, json,} from "@sveltejs/kit";
-import type {VkAuthorizeResponse} from "../../../models/types";
 
 /** @type {import('./$types').RequestHandler} */
 export async function POST({request}) {

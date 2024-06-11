@@ -2,10 +2,9 @@
 import {env} from "$env/dynamic/private";
 
 const baseUrl = "https://api.vk.com/method/";
+const defaultTimeout = 500;
 
 class BaseClient {
-    timer = null;
-
     async get<TResponse>(url: string, accessToken: string | null = null): Promise<TResponse> {
         let response = await fetch(this.createUrl(url, accessToken), {
             method: 'GET',
@@ -41,7 +40,7 @@ class BaseClient {
 
     async delay() {
         await new Promise((resolve) => {
-            setTimeout(resolve, 500);
+            setTimeout(resolve, defaultTimeout);
         })
     }
 }
