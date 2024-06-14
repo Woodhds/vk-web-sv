@@ -22,14 +22,14 @@ export async function POST({request}) {
 }
 
 export async function PUT({request}) {
-    const data = await request.json() as { ownerId: number, id: number };
+    const data = await request.json() as { ownerId: number, id: number, access_token: string };
 
     if (!data) {
         return error(400, {message: "invalid request"})
     }
 
     const client = new WallClient();
-    await client.like(data.ownerId, data.id);
+    await client.like(data.ownerId, data.id, data.access_token);
 
     return json({})
 }

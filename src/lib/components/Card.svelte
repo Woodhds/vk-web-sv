@@ -2,6 +2,7 @@
     import type {VkAuthorizeResponse, VkMessage} from "../../models/types";
     import CardImage from "$lib/components/CardImage.svelte";
     import {repost as storeRepost, like as storeLike} from "$lib/stores/message";
+    import { user } from "$lib/stores/user";
 
     const {message = $bindable()}: { message: VkMessage } = $props()
 
@@ -21,9 +22,7 @@
         try {
             isRepost = true;
 
-            const userData = JSON.parse(localStorage.getItem("access_token")) as VkAuthorizeResponse;
-
-            await storeRepost(message.ownerId, message.id, message.ownerId < 0 ? [-message.ownerId] : [], userData?.access_token);
+            await storeRepost(message.ownerId, message.id, message.ownerId < 0 ? [-message.ownerId] : [], $user.accessToken);
         } finally {
             isRepost = false;
         }
@@ -32,7 +31,7 @@
     const like = async () => {
         try {
             isLike = true;
-            await storeLike(message.ownerId, message.id)
+            await storeLike(message.ownerId, message.id, $user.accessToken);
         } finally {
             isLike = false;
         }

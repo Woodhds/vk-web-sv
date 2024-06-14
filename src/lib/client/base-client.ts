@@ -1,6 +1,3 @@
-// @ts-ignore
-import {env} from "$env/dynamic/private";
-
 const baseUrl = "https://api.vk.com/method/";
 const defaultTimeout = 500;
 
@@ -32,7 +29,7 @@ class BaseClient {
     private createUrl(url: string, accessToken: string | null = null): string {
         const query = new URL(url, baseUrl);
 
-        query.searchParams.set("access_token", accessToken ?? env.VK_TOKEN);
+        query.searchParams.set("access_token", accessToken);
         query.searchParams.set("v", "5.199")
 
         return query.toString();

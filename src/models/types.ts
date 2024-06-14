@@ -15,6 +15,8 @@ export interface VkMessage {
 
 export interface VkAuthorizeResponse {
     access_token: string;
-    error: string;
+    error: string | null;
     expires_in: string;
+    name: string;
+    avatar: string;
 }
