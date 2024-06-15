@@ -32,10 +32,9 @@ export async function POST({ request }) {
     }
 
     const userClient = new UserClient();
-    const { response: [vkUser] } = await userClient.getById(
-      vkResponse.user_id,
-      vkResponse.access_token,
-    );
+    const {
+      response: [vkUser],
+    } = await userClient.getById(vkResponse.user_id, vkResponse.access_token);
 
     return json({
       access_token: vkResponse.access_token,

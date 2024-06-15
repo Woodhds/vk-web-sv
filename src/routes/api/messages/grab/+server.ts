@@ -9,7 +9,7 @@ const wallClient = new WallClient();
 
 /** @type {import("./$types").RequestHandler} */
 export async function POST({ request }) {
-  const { access_token } = await request.json() as { access_token: string };
+  const { access_token } = (await request.json()) as { access_token: string };
 
   if (!access_token) {
     return error(400);
@@ -21,23 +21,23 @@ export async function POST({ request }) {
     data.set("city_id", "5");
     const resp = await fetch("https://wingri.ru/main/getPosts", {
       method: "POST",
-      body: data
+      body: data,
     });
 
     const doc = parse(await resp.text());
     const el = doc.querySelectorAll(
-      `.grid-item .post_container .post_footer a[href]`
+      `.grid-item .post_container .post_footer a[href]`,
     );
     const ids = el
       .map((e) =>
         e.attributes.href
           .replace("https://vk.com/wall", "")
           .split("_")
-          .filter((x) => x.length > 1)
+          .filter((x) => x.length > 1),
       )
       .map((e) => ({
         owner_id: +e[0],
-        id: +e[1]
+        id: +e[1],
       }));
 
     await insert(ids, null, access_token);
@@ -47,7 +47,12 @@ export async function POST({ request }) {
 
   for await (let user of users) {
     for (let i = 0; i < 4; i++) {
-      const searchResponse = await wallClient.wallGet(user, 50, i * 50, access_token);
+      const searchResponse = await wallClient.wallGet(
+        user,
+        50,
+        i * 50,
+        access_token,
+      );
 
       if (searchResponse.error != null) {
         console.error(searchResponse.error);
@@ -69,7 +74,7 @@ export async function POST({ request }) {
 async function insert(
   ids: { owner_id: number; id: number }[],
   user: number | null,
-  accessToken: string
+  accessToken: string,
 ) {
   const data = await wallClient.getById(ids, accessToken);
 
@@ -80,7 +85,7 @@ async function insert(
         date: new Date().toISOString(),
         id: item.id,
         text: item.text,
-        reposted_from: user
+        reposted_from: user,
       } as MessageEntity);
     }
   }
