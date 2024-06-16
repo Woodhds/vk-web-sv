@@ -1,6 +1,7 @@
 ﻿<script lang="ts">
-  import type { VkAuthorizeResponse } from "../../models/types";
+  import type { VkAuthorizeResponse } from "src/models/types";
   import { auth, logOut } from "$lib/stores/user";
+  import {add} from "$lib/stores/notification";
 
   let code = $state("");
   const redirectUrl = "https://api.vk.com/blank.html";
@@ -17,6 +18,11 @@
       method: "POST",
       body: JSON.stringify({ code, redirectUrl }),
     });
+    
+    if (!response.ok) {
+      add(response.statusText)
+      return;
+    }
 
     const data = (await response.json()) as VkAuthorizeResponse;
 
@@ -32,7 +38,7 @@
 </script>
 
 <form onsubmit={authorize}>
-  <button type="submit" class="btn btn-primary"> Авторизоваться </button>
+  <button type="submit" class="btn btn-primary">Получить код</button>
 </form>
 
 <form class="mt-3" onsubmit={getToken}>
@@ -44,9 +50,13 @@
     />
   </label>
 
-  <button class="btn btn-primary mt-3" type="submit"> Получить токен </button>
+  <button class="btn btn-primary mt-3" type="submit">Авторизоваться</button>
 </form>
 
 <form class="mt-3" onsubmit={logOut}>
-  <button type="submit" class="btn btn-secondary"> Выход </button>
+  <button type="submit" class="btn btn-secondary">Выход</button>
 </form>
+
+<svelte:head>
+  <title>Authorize</title>
+</svelte:head>

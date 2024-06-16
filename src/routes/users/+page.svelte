@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { UserEntity } from "../../models/entities";
+  import type { UserEntity } from "src/models/entities";
 
   const { data } = $props();
 

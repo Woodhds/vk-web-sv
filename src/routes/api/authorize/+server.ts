@@ -22,6 +22,10 @@ export async function POST({ request }) {
     error: string;
     user_id: number;
   };
+  
+  if (vkResponse.error) {
+    return error(400, vkResponse.error)
+  }
 
   const expiresIn = new Date();
   if (vkResponse.access_token) {

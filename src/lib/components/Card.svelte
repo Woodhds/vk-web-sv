@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { VkAuthorizeResponse, VkMessage } from "../../models/types";
+  import type { VkMessage } from "src/models/types";
   import CardImage from "$lib/components/CardImage.svelte";
   import {
     repost as storeRepost,

@@ -9,6 +9,7 @@
   import "../app.css";
   import { onMount, type Snippet } from "svelte";
   import { getUser, user } from "$lib/stores/user";
+  import Notifications from "$lib/components/Notifications.svelte";
 
   let isGrab = $state(false);
   isGrabStore.subscribe((val) => (isGrab = val));
@@ -42,12 +43,11 @@
 
   let { children }: { children: Snippet } = $props();
 
-  onMount(() => {
-    getUser();
-  });
+  onMount(() => getUser());
 </script>
 
 <Icons />
+
 <div class="container mx-auto">
   <nav class="navbar navbar-expand-lg bg-base-200 mb-8">
     <div class="navbar-start">
@@ -149,7 +149,7 @@
     {/if}
     <div class="navbar-end hidden lg:flex">
       {#if $user}
-        <div class="tooltip tooltip-bottom" data-tip={$user.name}>
+        <div class="tooltip tooltip-bottom mr-3" data-tip={$user.name}>
           <img
             class="h-8 avatar rounded-full"
             src={$user.avatar}
@@ -162,12 +162,13 @@
           <span class="loading loading-ring bg-primary"></span>
         </div>
       {:else}
-        <button onclick={collect} class="btn btn-ghost"> Получить </button>
+        <button onclick={collect} class="btn btn-ghost">Получить</button>
       {/if}
     </div>
   </nav>
   {@render children()}
 </div>
+<Notifications />
 
 <svelte:document on:scroll={addScroll} />
 
