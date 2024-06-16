@@ -1,30 +1,40 @@
 ﻿<script lang="ts">
   import type { VkAuthorizeResponse } from "src/models/types";
-  import { auth, logOut } from "$lib/stores/user";
-  import {add} from "$lib/stores/notification";
+  import { auth, logOut as storeLogout } from "$lib/stores/user";
+  import { add } from "$lib/stores/notification";
 
+  let { data } = $props();
+  
   let code = $state("");
   const redirectUrl = "https://api.vk.com/blank.html";
 
   const authorize = () => {
     window.open(
-      `https://oauth.vk.com/authorize?client_id=5662498&display=page&response_type=code&scope=111111111&redirect_uri=${redirectUrl}l&v=5.199`,
+      `https://oauth.vk.com/authorize?client_id=${data.CLIENT_ID}&display=page&response_type=code&scope=111111111&redirect_uri=${redirectUrl}l&v=5.199`,
       "_blank",
     );
   };
+  
+  const logOut = () => {
+    storeLogout()
+    add('Log out success', "success")
+  }
 
   const getToken = async () => {
     const response = await fetch("api/authorize", {
       method: "POST",
       body: JSON.stringify({ code, redirectUrl }),
     });
-    
+
+    const responseJson = await response.json();
+
     if (!response.ok) {
-      add(response.statusText)
+      const { message } = responseJson as { message: string };
+      add(message, "error");
       return;
     }
 
-    const data = (await response.json()) as VkAuthorizeResponse;
+    const data = responseJson as VkAuthorizeResponse;
 
     if (data?.access_token) {
       auth({
@@ -33,6 +43,8 @@
         name: data.name,
         expiresIn: data.expires_in,
       });
+      
+      add('Authentication success', 'success')
     }
   };
 </script>
