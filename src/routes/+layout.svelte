@@ -8,8 +8,9 @@
   import { page } from "$app/stores";
   import "../app.css";
   import { onMount, type Snippet } from "svelte";
-  import { getUser, user } from "$lib/stores/user";
+  import { getUser, logOut as storeLogout, user } from "$lib/stores/user";
   import Notifications from "$lib/components/Notifications.svelte";
+  import { add } from "$lib/stores/notification";
 
   let isGrab = $state(false);
   isGrabStore.subscribe((val) => (isGrab = val));
@@ -20,6 +21,11 @@
 
   const collect = async () => {
     await grab($user.accessToken);
+  };
+
+  const logOut = () => {
+    storeLogout();
+    add("Log out success", "success");
   };
 
   let hidden = $state(true);
@@ -48,11 +54,11 @@
 
 <Icons />
 
-<div class="container mx-auto">
-  <nav class="navbar navbar-expand-lg bg-base-200 mb-8">
+<nav class="navbar navbar-expand-lg bg-base-200 mb-6">
+  <div class="container mx-auto">
     <div class="navbar-start">
-      <div class="dropdown">
-        <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+      <div class="dropdown lg:hidden">
+        <div tabindex="0" role="button" class="btn btn-ghost ">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-5 w-5"
@@ -125,12 +131,6 @@
           class:btn-primary={$page.url.pathname === "/users"}
           href="/users">Пользователи</a
         >
-        <a
-          class="btn"
-          class:btn-ghost={$page.url.pathname !== "/authorize"}
-          class:btn-primary={$page.url.pathname === "/authorize"}
-          href="/authorize">Авторизация</a
-        >
       </div>
     </div>
     {#if $page.url.pathname === "/"}
@@ -147,27 +147,54 @@
         </form>
       </div>
     {/if}
+
     <div class="navbar-end hidden lg:flex">
       {#if $user}
-        <div class="tooltip tooltip-bottom mr-3" data-tip={$user.name}>
-          <img
-            class="h-8 avatar rounded-full"
-            src={$user.avatar}
-            alt={$user.name}
-          />
-        </div>
-      {/if}
-      {#if isGrab}
-        <div class="px-5">
-          <span class="loading loading-ring bg-primary"></span>
-        </div>
+        <ul class="menu menu-horizontal py-0">
+          <li>
+            <details>
+              <summary>
+                <span class="tooltip tooltip-bottom mr-3" data-tip={$user.name}>
+                  <img
+                    class="h-8 avatar rounded-full"
+                    src={$user.avatar}
+                    alt={$user.name}
+                  />
+                </span>
+              </summary>
+              <ul class="p-2 bg-base-100 rounded-t-none">
+                <li>
+                  {#if isGrab}
+                    <div class="px-5 flex justify-center">
+                      <span class="loading loading-ring bg-primary"></span>
+                    </div>
+                  {:else}
+                    <a onclick={collect} class="btn btn-ghost">Получить</a>
+                  {/if}
+                </li>
+                <li>
+                  <a onclick={logOut} class="btn btn-secondary">Выход</a>
+                </li>
+              </ul>
+            </details>
+          </li>
+        </ul>
       {:else}
-        <button onclick={collect} class="btn btn-ghost">Получить</button>
+        <a
+          class="btn"
+          class:btn-ghost={$page.url.pathname !== "/authorize"}
+          class:btn-primary={$page.url.pathname === "/authorize"}
+          href="/authorize">Авторизация</a
+        >
       {/if}
     </div>
-  </nav>
+  </div>
+</nav>
+
+<div class="container">
   {@render children()}
 </div>
+
 <Notifications />
 
 <svelte:document on:scroll={addScroll} />

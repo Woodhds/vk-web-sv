@@ -1,6 +1,6 @@
 ﻿<script lang="ts">
   import type { VkAuthorizeResponse } from "src/models/types";
-  import { auth, logOut as storeLogout } from "$lib/stores/user";
+  import { auth } from "$lib/stores/user";
   import { add } from "$lib/stores/notification";
 
   let { data } = $props();
@@ -14,37 +14,36 @@
       "_blank",
     );
   };
-  
-  const logOut = () => {
-    storeLogout()
-    add('Log out success', "success")
-  }
 
   const getToken = async () => {
-    const response = await fetch("api/authorize", {
-      method: "POST",
-      body: JSON.stringify({ code, redirectUrl }),
-    });
-
-    const responseJson = await response.json();
-
-    if (!response.ok) {
-      const { message } = responseJson as { message: string };
-      add(message, "error");
-      return;
-    }
-
-    const data = responseJson as VkAuthorizeResponse;
-
-    if (data?.access_token) {
-      auth({
-        accessToken: data.access_token,
-        avatar: data.avatar,
-        name: data.name,
-        expiresIn: data.expires_in,
+    try {
+      const response = await fetch("api/authorize", {
+        method: "POST",
+        body: JSON.stringify({ code, redirectUrl }),
       });
-      
-      add('Authentication success', 'success')
+
+      const responseJson = await response.json();
+
+      if (!response.ok) {
+        const { message } = responseJson as { message: string };
+        add(message, "error");
+        return;
+      }
+
+      const data = responseJson as VkAuthorizeResponse;
+
+      if (data?.access_token) {
+        auth({
+          accessToken: data.access_token,
+          avatar: data.avatar,
+          name: data.name,
+          expiresIn: data.expires_in,
+        });
+
+        add('Authentication success', 'success')
+      }
+    } finally {
+      code = '';
     }
   };
 </script>
@@ -63,10 +62,6 @@
   </label>
 
   <button class="btn btn-primary mt-3" type="submit">Авторизоваться</button>
-</form>
-
-<form class="mt-3" onsubmit={logOut}>
-  <button type="submit" class="btn btn-secondary">Выход</button>
 </form>
 
 <svelte:head>

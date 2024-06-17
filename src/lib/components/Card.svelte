@@ -15,10 +15,15 @@
     (Date.now() - Date.parse(message.parseDate)) / 1000 / 60 / 60 < 6;
 
   const getText = (text: string) => {
-    return text.replace(
-      /\[((id|club)\d+)\|(.*?)\]/gm,
-      `<a href="https://vk.com/$1" class="link-primary" target="_blank">$3</a>`,
-    );
+    return text
+      .replace(
+        /(\b(https?):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim,
+        `<a href="$1" class="link-primary" target="_blank">$1</a>`,
+      )
+      .replace(
+        /\[((id|club)\d+)\|(.*?)\]/gm,
+        `<a href="https://vk.com/$1" class="link-primary" target="_blank">$3</a>`,
+      );
   };
 
   let isLike = $state(false);
