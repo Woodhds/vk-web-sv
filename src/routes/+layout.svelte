@@ -162,7 +162,7 @@
                   />
                 </span>
               </summary>
-              <ul class="p-2 bg-base-100 rounded-t-none">
+              <ul class="p-2 bg-base-100 rounded-t-none min-w-32 z-10">
                 <li>
                   {#if isGrab}
                     <div class="px-5 flex justify-center">

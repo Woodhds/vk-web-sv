@@ -6,7 +6,7 @@
 </script>
 
 <div class="carousel">
-  {#if images.length > 0}
+  {#if images && images.length > 0}
     {#each images as image, i}
       <div
         id={key + "-" + i}
