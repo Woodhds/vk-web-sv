@@ -53,6 +53,18 @@
       isLike = false;
     }
   };
+
+  const participate = async (comment: string) => {
+    await fetch("api/messages/comment", {
+      method: "POST",
+      body: JSON.stringify({
+        owner_id: message.ownerId,
+        post_id: message.id,
+        comment,
+        access_token: $user.accessToken,
+      }),
+    });
+  };
 </script>
 
 <div class="card card-compact card-bordered bg-base-100">
@@ -79,36 +91,51 @@
       class="max-h-64 overflow-auto whitespace-pre-line text-wrap text-xs h-screen">
             {@html getText(message.text)}
         </pre>
-    <div class="card-actions">
-      <div class="card-actions">
-        <button
-          class:btn-outline={!message.userLikes}
-          class="btn btn-sm btn-primary flex"
-          onclick={like}
-        >
-          {#if isLike}
-            <span class="loading loading-ring"></span>
-          {:else}
-            <svg height="24" width="24" viewBox="0 0 24 24">
-              <use xlink:href="#like"></use>
+    <div class="card-actions flex-1">
+      <button
+        class:btn-outline={!message.userLikes}
+        class="btn btn-sm btn-primary flex"
+        onclick={like}
+      >
+        {#if isLike}
+          <span class="loading loading-ring"></span>
+        {:else}
+          <svg height="24" width="24" viewBox="0 0 24 24">
+            <use xlink:href="#like"></use>
+          </svg>
+        {/if}
+        {message.likesCount}
+      </button>
+      <button
+        class:btn-outline={!message.userReposted}
+        class="btn btn-sm btn-secondary flex"
+        onclick={repost}
+      >
+        {#if isRepost}
+          <span class="loading loading-ring"></span>
+        {:else}
+          <svg height="24" width="24" viewBox="0 0 24 24">
+            <use xlink:href="#repost"></use>
+          </svg>
+        {/if}
+        {message.repostsCount}
+      </button>
+      <div class="flex flex-1 justify-end">
+        <div class="dropdown">
+          <div tabindex="0" role="button" class="btn btn-sm btn-ghost">
+            <svg height="20" width="20" viewBox="0 0 20 20">
+              <use xlink:href="#dots-vertical"></use>
             </svg>
-          {/if}
-          {message.likesCount}
-        </button>
-        <button
-          class:btn-outline={!message.userReposted}
-          class="btn btn-sm btn-secondary flex"
-          onclick={repost}
-        >
-          {#if isRepost}
-            <span class="loading loading-ring"></span>
-          {:else}
-            <svg height="24" width="24" viewBox="0 0 24 24">
-              <use xlink:href="#repost"></use>
-            </svg>
-          {/if}
-          {message.repostsCount}
-        </button>
+          </div>
+          <ul
+            tabindex="0"
+            class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+          >
+            <li>
+              <button onclick="{() => participate('Участвую')}">Участвую</button>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>

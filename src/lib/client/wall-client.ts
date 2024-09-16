@@ -94,4 +94,21 @@ export class WallClient {
       accessToken,
     );
   }
+
+  async createComment(
+    owner_id: number,
+    post_id: number,
+    comment: string,
+    accessToken: string | null = null,
+  ) {
+    const url = new URLSearchParams();
+    url.set("owner_id", owner_id.toString());
+    url.set("post_id", post_id.toString());
+    url.set("message", comment);
+
+    return await baseClient.get<void>(
+      "wall.createComment?" + url.toString(),
+      accessToken,
+    );
+  }
 }
