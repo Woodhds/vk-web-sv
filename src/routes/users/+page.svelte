@@ -23,7 +23,7 @@
         <a href="https://vk.com/id{user.id}" target="_blank">
           <img
             alt={user.name}
-            class="avatar rounded-full mr-3"
+            class="avatar rounded-full mr-3 h-12 w-auto"
             src={user.avatar}
           />
           <span class="link link-hover link-primary">{user.name}</span>

@@ -12,7 +12,9 @@ class BaseClient {
 
     await this.delay();
 
-    return (await response.json()) as TResponse;
+    const data = await response.json();
+
+    return data as TResponse;
   }
 
   async post<TRequest, TResponse>(

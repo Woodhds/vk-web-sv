@@ -54,11 +54,11 @@
 
 <Icons />
 
-<nav class="navbar navbar-expand-lg bg-base-200 mb-6">
+<nav class="navbar navbar-expand-lg bg-base-200 mb-6 sticky z-10 top-0">
   <div class="container mx-auto">
     <div class="navbar-start">
       <div class="dropdown lg:hidden">
-        <div tabindex="0" role="button" class="btn btn-ghost ">
+        <div tabindex="0" role="button" class="btn btn-ghost">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-5 w-5"

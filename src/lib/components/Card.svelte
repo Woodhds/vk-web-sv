@@ -123,7 +123,7 @@
       <div class="flex flex-1 justify-end">
         <div class="dropdown">
           <div tabindex="0" role="button" class="btn btn-sm btn-ghost">
-            <svg height="20" width="20" viewBox="0 0 20 20">
+            <svg height="16" width="16" viewBox="0 0 16 16">
               <use xlink:href="#dots-vertical"></use>
             </svg>
           </div>

@@ -2,8 +2,8 @@ import { sql } from "@vercel/postgres";
 import type { MessageEntity } from "../../models/entities";
 
 class MessageRepository {
-  async search(search: string) {
-    const searchText = `'${search}'`;
+  async search(search: { search: string; }) {
+    const searchText = `'${search.search}'`;
 
     const { rows } = await sql.query(
       `
@@ -11,14 +11,28 @@ class MessageRepository {
                  messages.id,
                  date,
                  messages.owner_id,
-                 ts_headline(messages.text, to_tsquery($1), 'HighlightAll = true') as text
+                 ts_headline(messages.text, websearch_to_tsquery($1), 'HighlightAll = true') as text
             FROM messages
             inner join messages_search s on messages.id = s.id AND messages.owner_id = s.owner_id
-            where s.text @@ to_tsquery($1)
-            order by ts_rank(to_tsvector(s.text), to_tsquery($1)) desc;
+            where s.text @@ websearch_to_tsquery($1)
+            order by ts_rank(to_tsvector(s.text), websearch_to_tsquery($1)) desc;
         `,
       [searchText],
     );
+
+    //  const {rows} = await sql.query(
+    //   `
+    //         SELECT
+    //              id,
+    //              date,
+    //              owner_id,
+    //             ts_headline(messages.text, to_tsquery($1), 'HighlightAll = true') as text
+    //         FROM messages
+    //         where created_at > now() - interval '6 hour'
+    //         order by created_at
+    //     `,
+    //   [searchText],
+    // );
 
     return rows.map(
       (e) =>

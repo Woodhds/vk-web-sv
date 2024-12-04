@@ -32,7 +32,7 @@ interface CopyHistory {
   owner_id: number;
 }
 
-interface WallGetResponse {
+export interface WallGetResponse {
   response: {
     items: Message[];
     groups: Group[];

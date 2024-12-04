@@ -6,5 +6,8 @@
   <div class="flex gap-3">
     <div class="skeleton w-16 h-10"></div>
     <div class="skeleton w-16 h-10"></div>
+    <div class="flex flex-1 justify-end">
+      <div class="skeleton w-10 h-10"></div>
+    </div>
   </div>
 </div>
