@@ -13,8 +13,7 @@ export async function POST({ request }) {
   }
 
   const dbMessages = await repository.search({
-    search: requestData.search,
-    isNew: requestData.isNew,
+    search: requestData.search
   });
 
   if (!dbMessages.length) {

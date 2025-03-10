@@ -30,6 +30,8 @@
 
   let isRepost = $state(false);
 
+  let isComment = $state(false);
+
   const repost = async () => {
     try {
       isRepost = true;
@@ -55,15 +57,21 @@
   };
 
   const participate = async (comment: string) => {
-    await fetch("api/messages/comment", {
-      method: "POST",
-      body: JSON.stringify({
-        owner_id: message.ownerId,
-        post_id: message.id,
-        comment,
-        access_token: $user.accessToken,
-      }),
-    });
+    try {
+      isComment = true;
+
+      await fetch("api/messages/comment", {
+        method: "POST",
+        body: JSON.stringify({
+          owner_id: message.ownerId,
+          post_id: message.id,
+          comment,
+          access_token: $user.accessToken,
+        }),
+      });
+    } finally {
+      isComment = false;
+    }
   };
 </script>
 
@@ -131,9 +139,16 @@
             tabindex="0"
             class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
           >
-            <li>
-              <button onclick="{() => participate('Участвую')}">Участвую</button>
-            </li>
+            {#if isComment}
+              <li class="text-center">
+                <span class="loading loading-ring"></span>
+              </li>
+            {:else}
+              <li>
+                <button onclick={() => participate("Участвую")}>Участвую</button
+                >
+              </li>
+            {/if}
           </ul>
         </div>
       </div>

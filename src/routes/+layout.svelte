@@ -5,7 +5,7 @@
     grab,
     isGrab as isGrabStore,
   } from "$lib/stores/message.js";
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import "../app.css";
   import { onMount, type Snippet } from "svelte";
   import { getUser, logOut as storeLogout, user } from "$lib/stores/user";
@@ -54,8 +54,8 @@
 
 <Icons />
 
-<nav class="navbar navbar-expand-lg bg-base-200 mb-6 sticky z-10 top-0">
-  <div class="container mx-auto">
+<nav class="bg-base-200 mb-6 sticky z-10 top-0">
+  <div class="navbar navbar-expand-lg container mx-auto">
     <div class="navbar-start">
       <div class="dropdown lg:hidden">
         <div tabindex="0" role="button" class="btn btn-ghost">
@@ -82,24 +82,24 @@
           <li>
             <a
               class="btn"
-              class:btn-ghost={$page.url.pathname !== "/"}
-              class:btn-primary={$page.url.pathname === "/"}
+              class:btn-ghost={page.url.pathname !== "/"}
+              class:btn-primary={page.url.pathname === "/"}
               href="/">Главная</a
             >
           </li>
           <li>
             <a
               class="btn"
-              class:btn-ghost={$page.url.pathname !== "/users"}
-              class:btn-primary={$page.url.pathname === "/users"}
+              class:btn-ghost={page.url.pathname !== "/users"}
+              class:btn-primary={page.url.pathname === "/users"}
               href="/users">Пользователи</a
             >
           </li>
           <li>
             <a
               class="btn"
-              class:btn-ghost={$page.url.pathname !== "/authorize"}
-              class:btn-primary={$page.url.pathname === "/authorize"}
+              class:btn-ghost={page.url.pathname !== "/authorize"}
+              class:btn-primary={page.url.pathname === "/authorize"}
               href="/authorize">Авторизация</a
             >
           </li>
@@ -120,22 +120,22 @@
       <div class="lg:flex hidden">
         <a
           class="btn"
-          class:btn-ghost={$page.url.pathname !== "/"}
-          class:btn-primary={$page.url.pathname === "/"}
+          class:btn-ghost={page.url.pathname !== "/"}
+          class:btn-primary={page.url.pathname === "/"}
           href="/">Главная</a
         >
 
         <a
           class="btn"
-          class:btn-ghost={$page.url.pathname !== "/users"}
-          class:btn-primary={$page.url.pathname === "/users"}
+          class:btn-ghost={page.url.pathname !== "/users"}
+          class:btn-primary={page.url.pathname === "/users"}
           href="/users">Пользователи</a
         >
       </div>
     </div>
-    {#if $page.url.pathname === "/"}
+    {#if page.url.pathname === "/"}
       <div class="navbar-center">
-        <form onsubmit={get} class="flex flex-col lg:w-1/3">
+        <form onsubmit={get} class="flex flex-col">
           <div class="join">
             <input
               bind:value={search}
@@ -150,40 +150,46 @@
 
     <div class="navbar-end hidden lg:flex">
       {#if $user}
-        <ul class="menu menu-horizontal py-0">
-          <li>
-            <details>
-              <summary>
-                <span class="tooltip tooltip-bottom mr-3" data-tip={$user.name}>
-                  <img
-                    class="h-8 avatar rounded-full"
-                    src={$user.avatar}
-                    alt={$user.name}
-                  />
-                </span>
-              </summary>
-              <ul class="p-2 bg-base-100 rounded-t-none min-w-32 z-10">
-                <li>
-                  {#if isGrab}
-                    <div class="px-5 flex justify-center">
-                      <span class="loading loading-ring bg-primary"></span>
-                    </div>
-                  {:else}
-                    <a onclick={collect} class="btn btn-ghost">Получить</a>
-                  {/if}
-                </li>
-                <li>
-                  <a onclick={logOut} class="btn btn-secondary">Выход</a>
-                </li>
-              </ul>
-            </details>
-          </li>
-        </ul>
+        <div class="dropdown dropdown-start">
+          <div
+            tabindex="0"
+            role="button"
+            class="flex items-center btn btn-ghost"
+          >
+            <span class="tooltip tooltip-bottom mr-2" data-tip={$user.name}>
+              <img
+                class="h-8 avatar rounded-full"
+                src={$user.avatar}
+                alt={$user.name}
+              />
+            </span>
+            <svg class="rotate-180" height="10" width="10" viewBox="0 0 24 24">
+              <use xlink:href="#top"></use>
+            </svg>
+          </div>
+          <ul
+            tabindex="1"
+            class="dropdown-content menu p-2 bg-base-100 rounded-t-none min-w-32 z-10"
+          >
+            <li>
+              {#if isGrab}
+                <div class="px-5 flex justify-center">
+                  <span class="loading loading-ring bg-primary"></span>
+                </div>
+              {:else}
+                <a onclick={collect} class="btn btn-ghost">Получить</a>
+              {/if}
+            </li>
+            <li>
+              <a onclick={logOut} class="btn btn-secondary">Выход</a>
+            </li>
+          </ul>
+        </div>
       {:else}
         <a
           class="btn"
-          class:btn-ghost={$page.url.pathname !== "/authorize"}
-          class:btn-primary={$page.url.pathname === "/authorize"}
+          class:btn-ghost={page.url.pathname !== "/authorize"}
+          class:btn-primary={page.url.pathname === "/authorize"}
           href="/authorize">Авторизация</a
         >
       {/if}

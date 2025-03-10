@@ -1,7 +1,7 @@
-import type { PageLoad } from "./$types";
 import { repository } from "$lib/database/users";
+import type { UserEntity } from "../../models/entities";
 
-export const load: PageLoad = async () => {
+export const load: () => Promise<{ users: Promise<UserEntity[]> }> = async () => {
   const data = repository.getAll();
 
   return { users: data };

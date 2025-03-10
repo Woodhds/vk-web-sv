@@ -11,11 +11,11 @@ class MessageRepository {
                  messages.id,
                  date,
                  messages.owner_id,
-                 ts_headline(messages.text, websearch_to_tsquery($1), 'HighlightAll = true') as text
+                 ts_headline(messages.text, to_tsquery($1), 'HighlightAll = true') as text
             FROM messages
             inner join messages_search s on messages.id = s.id AND messages.owner_id = s.owner_id
-            where s.text @@ websearch_to_tsquery($1)
-            order by ts_rank(to_tsvector(s.text), websearch_to_tsquery($1)) desc;
+            where s.text @@ to_tsquery($1)
+            order by ts_rank(to_tsvector(s.text), to_tsquery($1)) desc;
         `,
       [searchText],
     );

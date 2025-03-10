@@ -19,6 +19,7 @@ export async function POST({ request }) {
     const data = new FormData();
     data.set("page_num", i.toString());
     data.set("city_id", "5");
+    data.set("our", "");
     const resp = await fetch("https://wingri.ru/main/getPosts", {
       method: "POST",
       body: data,
