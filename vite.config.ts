@@ -1,6 +1,7 @@
 import {defineConfig, loadEnv} from 'vite'
 import {sveltekit} from '@sveltejs/kit/vite'
 import dotenvExpand from 'dotenv-expand';
+import tailwindcss from '@tailwindcss/vite';
 
 // https://vitejs.dev/config/
 export default defineConfig(({mode}) => {
@@ -11,6 +12,6 @@ export default defineConfig(({mode}) => {
     }
 
     return {
-        plugins: [sveltekit()]
+        plugins: [sveltekit(), tailwindcss()],
     }
 })
