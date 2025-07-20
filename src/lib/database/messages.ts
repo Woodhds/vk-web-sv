@@ -20,20 +20,6 @@ class MessageRepository {
       [searchText],
     );
 
-    //  const {rows} = await sql.query(
-    //   `
-    //         SELECT
-    //              id,
-    //              date,
-    //              owner_id,
-    //             ts_headline(messages.text, to_tsquery($1), 'HighlightAll = true') as text
-    //         FROM messages
-    //         where created_at > now() - interval '6 hour'
-    //         order by created_at
-    //     `,
-    //   [searchText],
-    // );
-
     return rows.map(
       (e) =>
         ({

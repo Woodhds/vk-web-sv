@@ -20,6 +20,10 @@ class UserRepository {
   async delete(id: number) {
     await sql`DELETE FROM users WHERE id = ${id}`;
   }
+
+  async add(id: number, name: string, avatar: string): Promise<void> {
+    await sql`insert into users (id, name, avatar) VALUES (${id}, ${name}, ${avatar})`
+  }
 }
 
 const repository = new UserRepository();
