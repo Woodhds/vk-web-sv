@@ -1,28 +1,28 @@
 <script lang="ts">
-  import { user } from "$lib/stores/user";
   import { add as notificationAdd } from "$lib/stores/notification";
-  let search = $state("");
+  import { addUser } from "./data.remote";
 
-  const add = async () => {
-    await fetch("/api/users/add", {
-      body: JSON.stringify({ id: +search, access_token: $user.accessToken }),
-      method: "POST",
-    });
-
-    notificationAdd('Добавлено')
+  const add = () => {
+    notificationAdd("Добавлено");
   };
 </script>
 
-<form>
-  <label class="form-control">
-    <input
-      bind:value={search}
-      class="input input-sm input-bordered input-primary join-item"
-      type="text"
-      placeholder="Enter username"
-    />
-  </label>
-  <button class="btn btn-primary btn-sm join-item" onclick={add}
-    >Добавить</button
-  >
+<form
+  {...addUser.enhance(async ({ submit }) => {
+    await submit();
+    add();
+  })}
+  class="lg:w-1/3 flex flex-col gap-3"
+>
+  <input
+    name="id"
+    class="input input-bordered input-primary input-sm w-full"
+    type="text"
+    placeholder="Enter username"
+  />
+  <button class="btn btn-primary btn-sm">Добавить</button>
 </form>
+
+<svelte:head>
+  <title>Users - Add</title>
+</svelte:head>

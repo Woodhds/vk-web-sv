@@ -1,19 +1,22 @@
-import {vitePreprocess} from '@sveltejs/vite-plugin-svelte';
-import adapter from "@sveltejs/adapter-vercel"
+import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
+import adapter from "@sveltejs/adapter-vercel";
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-    compilerOptions: {
-        runes: true,
+  compilerOptions: {
+    runes: true,
+  },
+  preprocess: vitePreprocess({
+    style: {
+      css: "postcss.config.js",
     },
-    preprocess: vitePreprocess({
-        style: {
-            css: "postcss.config.js"
-        }
-    }),
-    kit: {
-        adapter: adapter()
-    }
+  }),
+  kit: {
+    adapter: adapter(),
+    experimental: {
+      remoteFunctions: true,
+    },
+  },
 };
 
-export default config
+export default config;

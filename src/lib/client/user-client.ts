@@ -8,9 +8,12 @@ export interface VkUser {
 }
 
 export class UserClient {
-  async getById(id: number, accessToken: string) {
+  async getById(id: number | null, accessToken: string) {
     const url = new URLSearchParams();
-    url.set("user_ids", id.toString());
+    if (id) {
+      url.set("user_ids", id.toString());
+    }
+
     url.set("fields", "photo_50");
 
     return await baseClient.get<{ response: VkUser[] }>(

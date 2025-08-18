@@ -1,8 +1,6 @@
 import { readonly, writable } from "svelte/store";
 
-interface UserState {
-  accessToken: string;
-  expiresIn: string;
+export interface UserState {
   avatar: string;
   name: string;
 }

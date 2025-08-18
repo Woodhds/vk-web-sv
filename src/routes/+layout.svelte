@@ -8,19 +8,25 @@
   import { page } from "$app/state";
   import "../app.css";
   import { onMount, type Snippet } from "svelte";
-  import { getUser, logOut as storeLogout, user } from "$lib/stores/user";
+  import {
+    logOut as storeLogout,
+    user,
+    auth,
+    UserState,
+  } from "$lib/stores/user";
   import Notifications from "$lib/components/Notifications.svelte";
   import { add } from "$lib/stores/notification";
+  import { getCurrentUser } from "./authorize/auth.remote";
 
   let isGrab = $state(false);
   isGrabStore.subscribe((val) => (isGrab = val));
 
   const get = async () => {
-    await getMessages(search, $user.accessToken);
+    await getMessages(search);
   };
 
   const collect = async () => {
-    await grab($user.accessToken);
+    await grab();
   };
 
   const logOut = () => {
@@ -49,7 +55,13 @@
 
   let { children }: { children: Snippet } = $props();
 
-  onMount(() => getUser());
+  onMount(async () => {
+    const user = await getCurrentUser();
+    auth({
+      avatar: user.photo_50,
+      name: user.first_name + " " + user.last_name,
+    } as UserState);
+  });
 </script>
 
 <Icons />
@@ -206,7 +218,11 @@
 <svelte:document on:scroll={addScroll} />
 
 <div class="fixed bottom-8 right-8" class:hidden>
-  <button class="btn btn-circle btn-primary" onclick={toTop}>
+  <button
+    aria-label="Наверх"
+    class="btn btn-circle btn-primary"
+    onclick={toTop}
+  >
     <svg height="24" width="24" viewBox="0 0 24 24">
       <use xlink:href="#top"></use>
     </svg>
