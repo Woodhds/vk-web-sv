@@ -46,7 +46,7 @@ export const authorize = form(async (data) => {
     });
   }
 
-  return error(400);
+  return { success: true };
 });
 
 export const getCurrentUser = query(async () => {
@@ -63,4 +63,14 @@ export const getCurrentUser = query(async () => {
   } = await userClient.getById(null, access_token);
 
   return vkUser;
+});
+
+export const logout = form(async () => {
+  const { cookies } = getRequestEvent();
+
+  cookies.delete("access_token", {
+    path: "/",
+  });
+
+  return { success: true };
 });

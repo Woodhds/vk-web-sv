@@ -10,7 +10,9 @@
 
   const redirectUrl = "https://api.vk.com/blank.html";
 
-  const onSuccess = async ({ form }) => {
+  const onSuccess = async ({ form, submit }) => {
+    await submit();
+
     form.reset();
 
     const data = await getCurrentUser();

@@ -12,11 +12,12 @@
     logOut as storeLogout,
     user,
     auth,
-    UserState,
+    type UserState,
   } from "$lib/stores/user";
   import Notifications from "$lib/components/Notifications.svelte";
   import { add } from "$lib/stores/notification";
-  import { getCurrentUser } from "./authorize/auth.remote";
+  import { getCurrentUser, logout } from "./authorize/auth.remote";
+  import { grabData } from "./grab.remote";
 
   let isGrab = $state(false);
   isGrabStore.subscribe((val) => (isGrab = val));
@@ -25,12 +26,8 @@
     await getMessages(search);
   };
 
-  const collect = async () => {
-    await grab();
-  };
-
-  const logOut = () => {
-    storeLogout();
+  const logOut = (data: { submit: Function }) => {
+    storeLogout(data.submit);
     add("Log out success", "success");
   };
 
@@ -56,6 +53,7 @@
   let { children }: { children: Snippet } = $props();
 
   onMount(async () => {
+    $inspect.trace("onMount");
     const user = await getCurrentUser();
     auth({
       avatar: user.photo_50,
@@ -116,15 +114,14 @@
             >
           </li>
           <li>
-            {#if isGrab}
-              <div class="px-5">
-                <span class="loading loading-ring bg-primary"></span>
-              </div>
-            {:else}
-              <button onclick={collect} class="btn btn-ghost">
-                Получить
+            <form {...grabData.enhance(grab)}>
+              <button class="btn btn-ghost">
+                {@render loading(isGrab)}
+                {#if !isGrab}
+                  Получить
+                {/if}
               </button>
-            {/if}
+            </form>
           </li>
         </ul>
       </div>
@@ -180,20 +177,24 @@
             </svg>
           </div>
           <ul
-            tabindex="1"
+            tabindex="0"
+            role="menu"
             class="dropdown-content menu p-2 bg-base-100 rounded-t-none min-w-32 z-10"
           >
             <li>
-              {#if isGrab}
-                <div class="px-5 flex justify-center">
-                  <span class="loading loading-ring bg-primary"></span>
-                </div>
-              {:else}
-                <a onclick={collect} class="btn btn-ghost">Получить</a>
-              {/if}
+              <form {...grabData.enhance(grab)}>
+                <button class="btn btn-ghost">
+                  {@render loading(isGrab)}
+                  {#if !isGrab}
+                    Получить
+                  {/if}
+                </button>
+              </form>
             </li>
             <li>
-              <a onclick={logOut} class="btn btn-secondary">Выход</a>
+              <form {...logout.enhance(logOut)}>
+                <button class="btn btn-secondary">Выход</button>
+              </form>
             </li>
           </ul>
         </div>
@@ -228,3 +229,11 @@
     </svg>
   </button>
 </div>
+
+{#snippet loading(isLoading: boolean)}
+  {#if isLoading}
+    <div class="px-5 flex justify-center">
+      <span class="loading loading-ring bg-primary"></span>
+    </div>
+  {/if}
+{/snippet}

@@ -1,15 +1,16 @@
-import { error, json } from "@sveltejs/kit";
+import { form } from "$app/server";
+import { getAccessToken } from "$lib/auth/auth";
 import { WallClient } from "$lib/client/wall-client";
 import { repository } from "$lib/database/messages";
 import { repository as userRepository } from "$lib/database/users";
-import type { MessageEntity } from "../../../../models/entities";
+import { error, json } from "@sveltejs/kit";
 import { parse } from "node-html-parser";
+import type { MessageEntity } from "../models/entities";
 
 const wallClient = new WallClient();
 
-/** @type {import("./$types").RequestHandler} */
-export async function POST({ request }) {
-  const { access_token } = (await request.json()) as { access_token: string };
+export const grabData = form(async () => {
+  const access_token = getAccessToken();
 
   if (!access_token) {
     return error(400);
@@ -69,25 +70,25 @@ export async function POST({ request }) {
     }
   }
 
-  return json({});
-}
+  return { success: true };
 
-async function insert(
-  ids: { owner_id: number; id: number }[],
-  user: number | null,
-  accessToken: string,
-) {
-  const data = await wallClient.getById(ids, accessToken);
+  async function insert(
+    ids: { owner_id: number; id: number }[],
+    user: number | null,
+    accessToken: string,
+  ) {
+    const data = await wallClient.getById(ids, accessToken);
 
-  if (data.response?.items.length > 0) {
-    for (const item of data.response.items) {
-      await repository.insert({
-        owner_id: item.owner_id,
-        date: new Date().toISOString(),
-        id: item.id,
-        text: item.text,
-        reposted_from: user,
-      } as MessageEntity);
+    if (data.response?.items.length > 0) {
+      for (const item of data.response.items) {
+        await repository.insert({
+          owner_id: item.owner_id,
+          date: new Date().toISOString(),
+          id: item.id,
+          text: item.text,
+          reposted_from: user,
+        } as MessageEntity);
+      }
     }
   }
-}
+});

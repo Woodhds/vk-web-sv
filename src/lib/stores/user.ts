@@ -13,7 +13,8 @@ export function auth(user: UserState) {
   localStorage.setItem("user", JSON.stringify(user));
 }
 
-export function logOut() {
+export async function logOut(submit: Function) {
+  await submit();
   _user.set(null);
   localStorage.removeItem("user");
 }

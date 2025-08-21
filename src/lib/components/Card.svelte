@@ -1,36 +1,62 @@
 <script lang="ts">
-  import type { VkMessage } from "src/models/types";
   import CardImage from "$lib/components/CardImage.svelte";
   import {
     comment,
     like,
     repost,
   } from "../../routes/api/messages/messages.remote";
+  import {
+    repost as storeRepost,
+    like as likeStore,
+  } from "$lib/stores/message.js";
+  import type { VkMessage } from "../../models/types";
 
   const { message = $bindable() }: { message: VkMessage } = $props();
 
   let key = $state(`${message.ownerId}_${message.id}`);
+  let isLike = $state(false);
+  let isRepost = $state(false);
+  let isComment = $state(false);
 
   const comm = comment.enhance(async ({ form, data, submit }) => {
-    data.set("ownerId", message.ownerId);
-    data.set("id", message.id);
+    data.set("ownerId", message.ownerId.toString());
+    data.set("id", message.id.toString());
 
-    await submit();
+    isComment = true;
+    try {
+      await submit();
+    } finally {
+      isComment = false;
+    }
   });
 
   const likeEnhancer = like.enhance(async ({ form, data, submit }) => {
-    data.set("ownerId", message.ownerId);
-    data.set("id", message.id);
+    data.set("ownerId", message.ownerId.toString());
+    data.set("id", message.id.toString());
 
-    await submit();
+    try {
+      isLike = true;
+
+      await submit();
+      likeStore(message.ownerId, message.id);
+    } finally {
+      isLike = false;
+    }
   });
 
   const repostEnhancer = repost.enhance(async ({ form, data, submit }) => {
-    data.set("ownerId", message.ownerId);
-    data.set("id", message.id);
-    data.set("groups", message.ownerId);
+    data.set("ownerId", message.ownerId.toString());
+    data.set("id", message.id.toString());
+    data.set("groups", message.ownerId.toString());
 
-    await submit();
+    try {
+      isRepost = true;
+
+      await submit();
+      storeRepost(message.ownerId, message.id);
+    } finally {
+      isRepost = false;
+    }
   });
 
   const isNew =
@@ -79,14 +105,14 @@
           class:btn-outline={!message.userLikes}
           class="btn btn-sm btn-primary flex"
         >
-          {#if like}
-            <span class="loading loading-ring"></span>
-          {:else}
+          {@render loading(isLike)}
+          {#if !isLike}
             <svg height="24" width="24" viewBox="0 0 24 24">
               <use xlink:href="#like"></use>
             </svg>
+
+            {message.likesCount}
           {/if}
-          {message.likesCount}
         </button>
       </form>
       <form {...repostEnhancer}>
@@ -94,14 +120,13 @@
           class:btn-outline={!message.userReposted}
           class="btn btn-sm btn-secondary flex"
         >
-          {#if repost}
-            <span class="loading loading-ring"></span>
-          {:else}
+          {@render loading(isRepost)}
+          {#if !isRepost}
             <svg height="24" width="24" viewBox="0 0 24 24">
               <use xlink:href="#repost"></use>
             </svg>
+            {message.repostsCount}
           {/if}
-          {message.repostsCount}
         </button>
       </form>
       <div class="flex flex-1 justify-end">
@@ -113,19 +138,16 @@
           </div>
           <ul
             tabindex="0"
+            role="menu"
             class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
           >
             <form {...comm}>
-              <svelte:boundary>
-                <li>
+              <li>
+                {#if !isComment}
                   <button>Участвую</button>
-                </li>
-                {#snippet pending()}
-                  <li class="text-center">
-                    <span class="loading loading-ring"></span>
-                  </li>
-                {/snippet}
-              </svelte:boundary>
+                {/if}
+                {@render loading(isComment)}
+              </li>
             </form>
           </ul>
         </div>
@@ -133,3 +155,9 @@
     </div>
   </div>
 </div>
+
+{#snippet loading(isLoading: boolean)}
+  {#if isLoading}
+    <span class="loading loading-ring block"></span>
+  {/if}
+{/snippet}

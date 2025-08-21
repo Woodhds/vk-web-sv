@@ -1,4 +1,4 @@
-import { form, getRequestEvent } from "$app/server";
+import { form } from "$app/server";
 import { getAccessToken } from "$lib/auth/auth";
 import { UserClient } from "$lib/client/user-client.js";
 import { repository } from "$lib/database/users";
