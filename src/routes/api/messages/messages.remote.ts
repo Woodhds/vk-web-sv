@@ -2,62 +2,56 @@ import { error } from "@sveltejs/kit";
 import { WallClient } from "$lib/client/wall-client";
 import { GroupClient } from "$lib/client/group-client";
 import { getAccessToken } from "$lib/auth/auth";
-import { form } from "$app/server";
+import { command } from "$app/server";
 
-export const repost = form(async (data) => {
-  const request = {
-    ownerId: +data.get("ownerId"),
-    id: +data.get("id"),
-    groups: data.get("groups")?.toString().split(",").map(Number) || [],
-  };
+export const repost = command(
+  "unchecked",
+  async (request: { ownerId: number; id: number; groups: number[] }) => {
+    const accessToken = getAccessToken();
 
-  const accessToken = getAccessToken();
+    if (!request) {
+      return error(400, { message: "invalid request" });
+    }
 
-  if (!data) {
-    return error(400, { message: "invalid request" });
-  }
+    const client = new WallClient();
+    await client.repost(request.ownerId, request.id, accessToken);
 
-  const client = new WallClient();
-  await client.repost(request.ownerId, request.id, accessToken);
+    const groupClient = new GroupClient();
+    for (let i of request.groups) {
+      await groupClient.join(i, accessToken);
+    }
 
-  const groupClient = new GroupClient();
-  for (let i of request.groups) {
-    await groupClient.join(i, accessToken);
-  }
+    return { success: true };
+  },
+);
 
-  return { success: true };
-});
+export const like = command(
+  "unchecked",
+  async (request: { ownerId: number; id: number }) => {
+    if (!request) {
+      return error(400, { message: "invalid request" });
+    }
 
-export const like = form(async (data) => {
-  const request = {
-    ownerId: +data.get("ownerId"),
-    id: +data.get("id"),
-  };
+    const client = new WallClient();
+    await client.like(request.ownerId, request.id, getAccessToken());
 
-  if (!data) {
-    return error(400, { message: "invalid request" });
-  }
+    return { success: true };
+  },
+);
 
-  const client = new WallClient();
-  await client.like(request.ownerId, request.id, getAccessToken());
+export const comment = command(
+  "unchecked",
+  async (request: { ownerId: number; comment: string; id: number }) => {
+    const access_token = getAccessToken();
 
-  return { success: true };
-});
+    const client = new WallClient();
+    await client.createComment(
+      request.ownerId,
+      request.id,
+      request.comment,
+      access_token,
+    );
 
-export const comment = form(async (data) => {
-  const access_token = getAccessToken();
-  const reqData = {
-    owner_id: +data.get("ownerId"),
-    post_id: +data.get("id"),
-    comment: data.get("comment").toString(),
-  };
-  const client = new WallClient();
-  await client.createComment(
-    reqData.owner_id,
-    reqData.post_id,
-    reqData.comment,
-    access_token,
-  );
-
-  return { success: true };
-});
+    return { success: true };
+  },
+);

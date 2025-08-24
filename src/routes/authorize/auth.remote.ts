@@ -1,4 +1,4 @@
-import { form, getRequestEvent, query } from "$app/server";
+import { form, getRequestEvent, query, command } from "$app/server";
 import { getAccessToken } from "$lib/auth/auth";
 import { UserClient } from "$lib/client/user-client";
 import { error } from "@sveltejs/kit";
@@ -46,6 +46,8 @@ export const authorize = form(async (data) => {
     });
   }
 
+  getCurrentUser().refresh();
+
   return { success: true };
 });
 
@@ -53,7 +55,7 @@ export const getCurrentUser = query(async () => {
   const access_token = getAccessToken();
 
   if (!access_token) {
-    return error(401);
+    return null;
   }
 
   const userClient = new UserClient();
@@ -65,12 +67,14 @@ export const getCurrentUser = query(async () => {
   return vkUser;
 });
 
-export const logout = form(async () => {
+export const logout = command(async () => {
   const { cookies } = getRequestEvent();
 
   cookies.delete("access_token", {
     path: "/",
   });
+
+  getCurrentUser().refresh();
 
   return { success: true };
 });

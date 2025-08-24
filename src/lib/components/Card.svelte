@@ -18,46 +18,44 @@
   let isRepost = $state(false);
   let isComment = $state(false);
 
-  const comm = comment.enhance(async ({ form, data, submit }) => {
-    data.set("ownerId", message.ownerId.toString());
-    data.set("id", message.id.toString());
-
+  const comm = async () => {
     isComment = true;
     try {
-      await submit();
+      await comment({
+        comment: "Участвую",
+        ownerId: message.ownerId,
+        id: message.id,
+      });
     } finally {
       isComment = false;
     }
-  });
+  };
 
-  const likeEnhancer = like.enhance(async ({ form, data, submit }) => {
-    data.set("ownerId", message.ownerId.toString());
-    data.set("id", message.id.toString());
-
+  const likeEnhancer = async () => {
     try {
       isLike = true;
 
-      await submit();
+      await like({ ownerId: message.ownerId, id: message.id });
       likeStore(message.ownerId, message.id);
     } finally {
       isLike = false;
     }
-  });
+  };
 
-  const repostEnhancer = repost.enhance(async ({ form, data, submit }) => {
-    data.set("ownerId", message.ownerId.toString());
-    data.set("id", message.id.toString());
-    data.set("groups", message.ownerId.toString());
-
+  const repostEnhancer = async () => {
     try {
       isRepost = true;
 
-      await submit();
+      await repost({
+        ownerId: message.ownerId,
+        id: message.id,
+        groups: [message.ownerId],
+      });
       storeRepost(message.ownerId, message.id);
     } finally {
       isRepost = false;
     }
-  });
+  };
 
   const isNew =
     (Date.now() - Date.parse(message.parseDate)) / 1000 / 60 / 60 < 6;
@@ -100,35 +98,34 @@
             {@html getText(message.text)}
         </pre>
     <div class="card-actions flex-1">
-      <form {...likeEnhancer}>
-        <button
-          class:btn-outline={!message.userLikes}
-          class="btn btn-sm btn-primary flex"
-        >
-          {@render loading(isLike)}
-          {#if !isLike}
-            <svg height="24" width="24" viewBox="0 0 24 24">
-              <use xlink:href="#like"></use>
-            </svg>
-
-            {message.likesCount}
-          {/if}
-        </button>
-      </form>
-      <form {...repostEnhancer}>
-        <button
-          class:btn-outline={!message.userReposted}
-          class="btn btn-sm btn-secondary flex"
-        >
-          {@render loading(isRepost)}
-          {#if !isRepost}
-            <svg height="24" width="24" viewBox="0 0 24 24">
-              <use xlink:href="#repost"></use>
-            </svg>
-            {message.repostsCount}
-          {/if}
-        </button>
-      </form>
+      <button
+        onclick={() => likeEnhancer()}
+        class:btn-outline={!message.userLikes}
+        class="btn btn-sm btn-primary flex"
+      >
+        {#if !isLike}
+          <svg height="24" width="24" viewBox="0 0 24 24">
+            <use xlink:href="#like"></use>
+          </svg>
+          {message.likesCount}
+        {:else}
+          <span class="loading loading-ring block"></span>
+        {/if}
+      </button>
+      <button
+        onclick={() => repostEnhancer()}
+        class:btn-outline={!message.userReposted}
+        class="btn btn-sm btn-secondary flex"
+      >
+        {#if !isRepost}
+          <svg height="24" width="24" viewBox="0 0 24 24">
+            <use xlink:href="#repost"></use>
+          </svg>
+          {message.repostsCount}
+        {:else}
+          <span class="loading loading-ring block"></span>
+        {/if}
+      </button>
       <div class="flex flex-1 justify-end">
         <div class="dropdown">
           <div tabindex="0" role="button" class="btn btn-sm btn-ghost">
@@ -141,23 +138,16 @@
             role="menu"
             class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
           >
-            <form {...comm}>
-              <li>
-                {#if !isComment}
-                  <button>Участвую</button>
-                {/if}
-                {@render loading(isComment)}
-              </li>
-            </form>
+            <li>
+              {#if !isComment}
+                <button onclick={() => comm()} type="submit">Участвую</button>
+              {:else}
+                <span class="loading loading-ring block"></span>
+              {/if}
+            </li>
           </ul>
         </div>
       </div>
     </div>
   </div>
 </div>
-
-{#snippet loading(isLoading: boolean)}
-  {#if isLoading}
-    <span class="loading loading-ring block"></span>
-  {/if}
-{/snippet}

@@ -4,29 +4,18 @@ import { search as remoteSearch } from "../../routes/api/messages/search/search.
 
 const _messages = writable<VkMessage[]>([]);
 const _isLoading = writable(false);
-const _isGrab = writable(false);
 
 export const messages = readonly<VkMessage[]>(_messages);
 export const isLoading = readonly<boolean>(_isLoading);
-export const isGrab = readonly<boolean>(_isGrab);
 
 export const getMessages = async (search: string) => {
   _isLoading.set(true);
   try {
-    const data = (await remoteSearch(search)) as { messages: VkMessage[] };
+    const data = await remoteSearch(search);
 
     _messages.set([...data.messages]);
   } finally {
     _isLoading.set(false);
-  }
-};
-
-export const grab = async ({ submit }) => {
-  _isGrab.set(true);
-  try {
-    await submit();
-  } finally {
-    _isGrab.set(false);
   }
 };
 

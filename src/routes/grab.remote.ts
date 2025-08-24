@@ -1,4 +1,4 @@
-import { form } from "$app/server";
+import { query } from "$app/server";
 import { getAccessToken } from "$lib/auth/auth";
 import { WallClient } from "$lib/client/wall-client";
 import { repository } from "$lib/database/messages";
@@ -9,7 +9,7 @@ import type { MessageEntity } from "../models/entities";
 
 const wallClient = new WallClient();
 
-export const grabData = form(async () => {
+export const grabData = query(async () => {
   const access_token = getAccessToken();
 
   if (!access_token) {

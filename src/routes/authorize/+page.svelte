@@ -1,32 +1,11 @@
 ﻿<script lang="ts">
   import type { VkAuthorizeResponse } from "src/models/types";
-  import { auth } from "$lib/stores/user";
   import { add } from "$lib/stores/notification";
-  import { enhance } from "$app/forms";
-  import { authorize, getCurrentUser } from "./auth.remote";
-  import { onMount } from "svelte";
+  import { authorize } from "./auth.remote";
 
   let { data } = $props();
 
   const redirectUrl = "https://api.vk.com/blank.html";
-
-  const onSuccess = async ({ form, submit }) => {
-    await submit();
-
-    form.reset();
-
-    const data = await getCurrentUser();
-
-    if (data?.id) {
-      auth({
-        id: data.id,
-        avatar: data.avatar,
-        name: data.name,
-      });
-
-      add("Authentication success", "success");
-    }
-  };
 
   const redirectToAuth = () => {
     window.open(
@@ -40,7 +19,7 @@
   <button type="submit" class="btn btn-primary">Получить код</button>
 </form>
 
-<form class="mt-4" {...authorize.enhance(onSuccess)}>
+<form class="mt-4" {...authorize}>
   <input type="hidden" name="redirect_uri" value={redirectUrl} />
   <label class="form-control">
     Код
