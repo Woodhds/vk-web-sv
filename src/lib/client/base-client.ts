@@ -1,4 +1,4 @@
-const baseUrl = "https://api.vk.com/method/";
+const baseUrl = "https://api.vk.ru/method/";
 const defaultTimeout = 500;
 
 class BaseClient {
