@@ -12,7 +12,9 @@ const config = {
     },
   }),
   kit: {
-    adapter: adapter(),
+    adapter: adapter({
+      runtime: "experimental_bun1.x",
+    }),
     experimental: {
       remoteFunctions: true,
     },

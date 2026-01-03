@@ -1,17 +1,16 @@
-import {defineConfig, loadEnv} from 'vite'
-import {sveltekit} from '@sveltejs/kit/vite'
-import dotenvExpand from 'dotenv-expand';
-import tailwindcss from '@tailwindcss/vite';
+import devtoolsJson from "vite-plugin-devtools-json";
+import { defineConfig, loadEnv } from "vite";
+import { sveltekit } from "@sveltejs/kit/vite";
+import dotenvExpand from "dotenv-expand";
+import tailwindcss from "@tailwindcss/vite";
 
 // https://vitejs.dev/config/
-export default defineConfig(({mode}) => {
+export default defineConfig(({ mode }) => {
+  if (mode === "development") {
+    const env = loadEnv(mode, process.cwd(), "");
 
-    if (mode === 'development') {
-        const env = loadEnv(mode, process.cwd(), '');
-        dotenvExpand.expand({parsed: env});
-    }
+    dotenvExpand.expand({ parsed: env });
+  }
 
-    return {
-        plugins: [sveltekit(), tailwindcss()],
-    }
-})
+  return { plugins: [sveltekit(), tailwindcss(), devtoolsJson()] };
+});

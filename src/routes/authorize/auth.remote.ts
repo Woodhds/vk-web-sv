@@ -2,54 +2,53 @@ import { form, getRequestEvent, query, command } from "$app/server";
 import { getAccessToken } from "$lib/auth/auth";
 import { UserClient } from "$lib/client/user-client";
 import { error } from "@sveltejs/kit";
+import * as v from "valibot";
 
-export const authorize = form(async (data) => {
-  const request = {
-    code: data.get("code"),
-    redirectUrl: data.get("redirect_uri"),
-  };
+export const authorize = form(
+  v.object({
+    code: v.string(),
+    redirectUri: v.string(),
+  }),
+  async ({ code, redirectUri }) => {
+    const response = await fetch(
+      `https://oauth.vk.com/access_token?client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}&code=${code}&redirect_uri=${redirectUri}&v=5.199`,
+      {
+        method: "POST",
+      },
+    );
 
-  if (!request?.code) {
-    return error(400);
-  }
+    const vkResponse = (await response.json()) as {
+      access_token: string;
+      expires_in: number;
+      error: string;
+      error_description: string;
+      user_id: number;
+    };
 
-  const response = await fetch(
-    `https://oauth.vk.com/access_token?client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}&code=${request.code}&redirect_uri=${request.redirectUrl}&v=5.199`,
-    {
-      method: "POST",
-    },
-  );
-
-  const vkResponse = (await response.json()) as {
-    access_token: string;
-    expires_in: number;
-    error: string;
-    user_id: number;
-  };
-
-  if (vkResponse.error) {
-    return error(400, vkResponse.error);
-  }
-
-  const expiresIn = new Date();
-  if (vkResponse.access_token) {
-    if (vkResponse.expires_in > 0) {
-      expiresIn.setSeconds(expiresIn.getSeconds() + vkResponse.expires_in);
-    } else {
-      expiresIn.setMinutes(expiresIn.getMinutes() + 12000000);
+    if (vkResponse.error) {
+      return error(400, vkResponse.error + ", " + vkResponse.error_description);
     }
 
-    const { cookies } = getRequestEvent();
+    const expiresIn = new Date();
+    if (vkResponse.access_token) {
+      if (vkResponse.expires_in > 0) {
+        expiresIn.setSeconds(expiresIn.getSeconds() + vkResponse.expires_in);
+      } else {
+        expiresIn.setMinutes(expiresIn.getMinutes() + 12000000);
+      }
 
-    cookies.set("access_token", vkResponse.access_token, {
-      path: "/",
-    });
-  }
+      const { cookies } = getRequestEvent();
 
-  getCurrentUser().refresh();
+      cookies.set("access_token", vkResponse.access_token, {
+        path: "/",
+      });
+    }
 
-  return { success: true };
-});
+    await getCurrentUser().refresh();
+
+    return { success: true };
+  },
+);
 
 export const getCurrentUser = query(async () => {
   const access_token = getAccessToken();

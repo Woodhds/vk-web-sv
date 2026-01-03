@@ -1,15 +1,18 @@
 ﻿<script lang="ts">
-  import type { VkAuthorizeResponse } from "src/models/types";
-  import { add } from "$lib/stores/notification";
   import { authorize } from "./auth.remote";
+  import { onMount } from "svelte";
 
   let { data } = $props();
 
   const redirectUrl = "https://api.vk.com/blank.html";
 
+  onMount(() => {
+    authorize.fields.redirectUri.set(redirectUrl);
+  })
+
   const redirectToAuth = () => {
     window.open(
-      `https://oauth.vk.com/authorize?client_id=${data.CLIENT_ID}&display=page&response_type=code&scope=111111111&redirect_uri=${redirectUrl}l&v=5.199`,
+      `https://oauth.vk.com/authorize?client_id=${data.CLIENT_ID}&display=page&response_type=code&scope=111111111&redirect_uri=${redirectUrl}&v=5.199`,
       "_blank",
     );
   };
@@ -20,11 +23,14 @@
 </form>
 
 <form class="mt-4" {...authorize}>
-  <input type="hidden" name="redirect_uri" value={redirectUrl} />
+  <input
+    class="hidden"
+    {...authorize.fields.redirectUri.as("text")}
+  />
   <label class="form-control">
     Код
     <input
-      name="code"
+      {...authorize.fields.code.as("text")}
       class="input-sm input input-bordered input-primary w-full md:w-1/3"
     />
   </label>
