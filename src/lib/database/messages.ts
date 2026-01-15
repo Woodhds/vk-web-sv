@@ -2,7 +2,7 @@ import { sql } from "@vercel/postgres";
 import type { MessageEntity } from "../../models/entities";
 
 class MessageRepository {
-  async search(search: { search: string; }) {
+  async search(search: { search: string }) {
     const searchText = `'${search.search}'`;
 
     const { rows } = await sql.query(
@@ -15,7 +15,7 @@ class MessageRepository {
             FROM messages
             inner join messages_search s on messages.id = s.id AND messages.owner_id = s.owner_id
             where s.text @@ to_tsquery($1)
-            order by ts_rank(to_tsvector(s.text), to_tsquery($1)) desc;
+            order by ts_rank_cd(to_tsvector(s.text), to_tsquery($1)) desc;
         `,
       [searchText],
     );
@@ -33,7 +33,7 @@ class MessageRepository {
 
   async insert(message: MessageEntity) {
     await sql`insert into messages (id, owner_id, date, text, reposted_from) VALUES (
-            ${message.id}, ${message.owner_id}, now(), ${message.text}, ${message.reposted_from}) 
+            ${message.id}, ${message.owner_id}, now(), ${message.text}, ${message.reposted_from})
             ON CONFLICT (id, owner_id) DO NOTHING`;
   }
 
@@ -68,7 +68,7 @@ class MessageRepository {
             $$
                 BEGIN
                 INSERT INTO messages_search (id, owner_id, text) VALUES (new.id, new.owner_id, new.text);
-                
+
                 RETURN NEW;
                 END;
             $$;
