@@ -25,20 +25,6 @@ export const repost = command(
   },
 );
 
-export const like = command(
-  "unchecked",
-  async (request: { ownerId: number; id: number }) => {
-    if (!request) {
-      return error(400, { message: "invalid request" });
-    }
-
-    const client = new WallClient();
-    await client.like(request.ownerId, request.id, getAccessToken());
-
-    return { success: true };
-  },
-);
-
 export const comment = command(
   "unchecked",
   async (request: { ownerId: number; comment: string; id: number }) => {

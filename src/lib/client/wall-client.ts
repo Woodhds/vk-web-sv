@@ -83,18 +83,6 @@ export class WallClient {
     );
   }
 
-  async like(ownerId: number, id: number, accessToken: string) {
-    const url = new URLSearchParams();
-    url.set("owner_id", ownerId.toString());
-    url.set("item_id", id.toString());
-    url.set("type", "post");
-
-    return await baseClient.get<void>(
-      "likes.add?" + url.toString(),
-      accessToken,
-    );
-  }
-
   async createComment(
     owner_id: number,
     post_id: number,

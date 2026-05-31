@@ -34,15 +34,3 @@ export const repost = async (ownerId: number, id: number) => {
     return d;
   });
 };
-
-export const like = async (ownerId: number, id: number) => {
-  _messages.update((d) => {
-    const idx = d.findIndex((f) => f.ownerId === ownerId && f.id === id);
-
-    if (idx >= 0) {
-      d.splice(idx, 1, { ...d[idx], userLikes: true } as VkMessage);
-    }
-
-    return d;
-  });
-};

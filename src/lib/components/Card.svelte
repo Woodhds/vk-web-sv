@@ -1,20 +1,12 @@
 <script lang="ts">
   import CardImage from "$lib/components/CardImage.svelte";
-  import {
-    comment,
-    like,
-    repost,
-  } from "../../routes/api/messages/messages.remote";
-  import {
-    repost as storeRepost,
-    like as likeStore,
-  } from "$lib/stores/message.js";
+  import { comment, repost } from "../../routes/api/messages/messages.remote";
+  import { repost as storeRepost } from "$lib/stores/message.js";
   import type { VkMessage } from "../../models/types";
 
   const { message = $bindable() }: { message: VkMessage } = $props();
 
   let key = $state(`${message.ownerId}_${message.id}`);
-  let isLike = $state(false);
   let isRepost = $state(false);
   let isComment = $state(false);
 
@@ -28,17 +20,6 @@
       });
     } finally {
       isComment = false;
-    }
-  };
-
-  const likeEnhancer = async () => {
-    try {
-      isLike = true;
-
-      await like({ ownerId: message.ownerId, id: message.id });
-      likeStore(message.ownerId, message.id);
-    } finally {
-      isLike = false;
     }
   };
 
@@ -99,18 +80,13 @@
         </pre>
     <div class="card-actions flex-1">
       <button
-        onclick={() => likeEnhancer()}
         class:btn-outline={!message.userLikes}
-        class="btn btn-sm btn-primary flex"
+        class="btn btn-sm btn-secondary flex"
       >
-        {#if !isLike}
-          <svg height="24" width="24" viewBox="0 0 24 24">
-            <use xlink:href="#like"></use>
-          </svg>
-          {message.likesCount}
-        {:else}
-          <span class="loading loading-ring block"></span>
-        {/if}
+        <svg height="24" width="24" viewBox="0 0 24 24">
+          <use xlink:href="#like"></use>
+        </svg>
+        {message.likesCount}
       </button>
       <button
         onclick={() => repostEnhancer()}
@@ -136,7 +112,7 @@
           <ul
             tabindex="0"
             role="menu"
-            class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+            class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow"
           >
             <li>
               {#if !isComment}
