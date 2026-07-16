@@ -4,7 +4,7 @@
 
   let { data } = $props();
 
-  const redirectUrl = "https://api.vk.com/blank.html";
+  const redirectUrl = "https://api.vk.ru/blank.html";
 
   onMount(() => {
     authorize.fields.redirectUri.set(redirectUrl);
