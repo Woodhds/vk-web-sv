@@ -1,5 +1,5 @@
 ﻿<script lang="ts">
-  import { notifications } from "$lib/stores/notification";
+  import { notifications } from "#lib/stores/notification.js";
 </script>
 
 <div class="toast toast-end">

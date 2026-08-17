@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Auth from "$lib/components/Auth.svelte";
-  import Grab from "$lib/components/Grab.svelte";
-  import { getMessages } from "$lib/stores/message.js";
+  import Auth from "#lib/components/Auth.svelte";
+  import Grab from "#lib/components/Grab.svelte";
+  import { getMessages } from "#lib/stores/message.js";
   import { page } from "$app/state";
 
   const path = $derived(page.url.pathname);

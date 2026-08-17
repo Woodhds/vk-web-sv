@@ -1,4 +1,4 @@
-import { baseClient } from "$lib/client/base-client";
+import { baseClient } from "#lib/client/base-client.js";
 
 interface Message {
   id: number;

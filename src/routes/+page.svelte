@@ -1,8 +1,8 @@
 <script lang="ts">
-  import Card from "$lib/components/Card.svelte";
+  import Card from "#lib/components/Card.svelte";
   import type { VkMessage } from "../models/types";
-  import { messages as storeMessages, isLoading } from "$lib/stores/message";
-  import CardSkeleton from "$lib/components/CardSkeleton.svelte";
+  import { messages as storeMessages, isLoading } from "#lib/stores/message.js";
+  import CardSkeleton from "#lib/components/CardSkeleton.svelte";
 
   let messages: VkMessage[] = $state([] as VkMessage[]);
   storeMessages.subscribe((val) => {

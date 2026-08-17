@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { add as notificationAdd } from "$lib/stores/notification";
+  import { add as notificationAdd } from "#lib/stores/notification.js";
   import { addUser } from "./data.remote";
 
   const add = () => {
@@ -15,9 +15,8 @@
   class="lg:w-1/3 flex flex-col gap-3"
 >
   <input
-    name="id"
+    {...addUser.fields.id.as('text')}
     class="input input-bordered input-primary input-sm w-full"
-    type="text"
     placeholder="Enter username"
   />
   <button class="btn btn-primary btn-sm">Добавить</button>

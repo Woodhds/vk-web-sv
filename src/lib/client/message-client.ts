@@ -1,4 +1,4 @@
-﻿import { baseClient } from "$lib/client/base-client";
+﻿import { baseClient } from "#lib/client/base-client.js";
 
 interface Conversation {
   in_read: number;
@@ -11,6 +11,4 @@ interface ConversationResponse {
   };
 }
 
-export class MessageClient {
- 
-}
+export class MessageClient {}

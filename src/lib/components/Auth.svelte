@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from "$app/state";
   import { getCurrentUser, logout } from "../../routes/authorize/auth.remote";
-  import { add } from "$lib/stores/notification";
+  import { add } from "#lib/stores/notification.js";
   import Grab from "./Grab.svelte";
 
   const currentUser = getCurrentUser();

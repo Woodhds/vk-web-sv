@@ -1,7 +1,7 @@
-import { repository } from "$lib/database/messages";
+import { repository } from "#lib/database/messages.js";
 import type { VkMessage } from "../../../../models/types";
-import { WallClient, type WallGetResponse } from "$lib/client/wall-client";
-import { getAccessToken } from "$lib/auth/auth";
+import { WallClient, type WallGetResponse } from "#lib/client/wall-client.js";
+import { getAccessToken } from "#lib/auth/auth.js";
 import { query } from "$app/server";
 
 export const search = query(
@@ -53,12 +53,12 @@ export const search = query(
           id: e.id,
           repostsCount: e.reposts?.count ?? 0,
           likesCount: e.likes?.count ?? 0,
-          userLikes: e.likes?.user_likes ?? false,
+          userLikes: e.likes?.user_likes === 1,
           images: e.attachments
             ?.filter((e) => e.type === "photo")
             .map((e) => e.photo.sizes.find((e) => e.width > 200)?.url)
             .filter((e) => !!e),
-          userReposted: e.reposts?.user_reposted ?? false,
+          userReposted: e.reposts?.user_reposted === 1,
           fromId: e.from_id,
           owner:
             resp

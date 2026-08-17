@@ -12,7 +12,7 @@
   {:else}
     {#each users.current as user}
       <form {...deleteUser} class="flex gap-4 items-center">
-        <input type="hidden" name="id" value={user.id} />
+        <input class="hidden" {...deleteUser.fields.id.as('number')} />
         <a href="https://vk.com/id{user.id}" target="_blank">
           <img
             alt={user.name}

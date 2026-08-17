@@ -1,7 +1,7 @@
 import { error } from "@sveltejs/kit";
-import { WallClient } from "$lib/client/wall-client";
-import { GroupClient } from "$lib/client/group-client";
-import { getAccessToken } from "$lib/auth/auth";
+import { WallClient } from "#lib/client/wall-client.js";
+import { GroupClient } from "#lib/client/group-client.js";
+import { getAccessToken } from "#lib/auth/auth.js";
 import { command } from "$app/server";
 
 export const repost = command(
@@ -10,7 +10,7 @@ export const repost = command(
     const accessToken = getAccessToken();
 
     if (!request) {
-      return error(400, { message: "invalid request" });
+      return error(400, "invalid request");
     }
 
     const client = new WallClient();

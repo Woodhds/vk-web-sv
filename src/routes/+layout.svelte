@@ -1,10 +1,10 @@
 <script lang="ts">
-  import Icons from "$lib/components/Icons.svelte";
+  import Icons from "#lib/components/Icons.svelte";
 
   import "../app.css";
   import { type Snippet } from "svelte";
-  import Notifications from "$lib/components/Notifications.svelte";
-  import Header from "$lib/components/Header.svelte";
+  import Notifications from "#lib/components/Notifications.svelte";
+  import Header from "#lib/components/Header.svelte";
 
   let hidden = $state(true);
 

@@ -1,3 +1,5 @@
+import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
+import adapter from "@sveltejs/adapter-vercel";
 import devtoolsJson from "vite-plugin-devtools-json";
 import { defineConfig, loadEnv } from "vite";
 import { sveltekit } from "@sveltejs/kit/vite";
@@ -12,5 +14,22 @@ export default defineConfig(({ mode }) => {
     dotenvExpand.expand({ parsed: env });
   }
 
-  return { plugins: [sveltekit(), tailwindcss(), devtoolsJson()] };
+  return {
+    plugins: [
+      sveltekit({
+        compilerOptions: { experimental: { async: true } },
+        preprocess: vitePreprocess({
+          style: {
+            css: {
+              postcss: 'postcss.config.cjs'
+            }
+          },
+        }),
+        adapter: adapter({ runtime: "bun1.x" }),
+        experimental: { remoteFunctions: true },
+      }),
+      tailwindcss(),
+      devtoolsJson(),
+    ],
+  };
 });

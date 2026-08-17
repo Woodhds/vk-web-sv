@@ -19,7 +19,7 @@ class BaseClient {
 
   async post<TRequest, TResponse>(
     url: string,
-    body: TRequest,
+    body: TRequest | null,
     accessToken: string | null = null,
   ): Promise<TResponse> {
     let response = await fetch(this.createUrl(url, accessToken), {
@@ -38,7 +38,7 @@ class BaseClient {
   private createUrl(url: string, accessToken: string | null = null): string {
     const query = new URL(url, baseUrl);
 
-    query.searchParams.set("access_token", accessToken);
+    query.searchParams.set("access_token", accessToken ?? '');
     query.searchParams.set("v", "5.199");
 
     return query.toString();

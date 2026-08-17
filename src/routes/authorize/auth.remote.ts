@@ -1,6 +1,6 @@
 import { form, getRequestEvent, query, command } from "$app/server";
-import { getAccessToken } from "$lib/auth/auth";
-import { UserClient } from "$lib/client/user-client";
+import { getAccessToken } from "#lib/auth/auth.js";
+import { UserClient } from "#lib/client/user-client.js";
 import { error } from "@sveltejs/kit";
 import * as v from "valibot";
 

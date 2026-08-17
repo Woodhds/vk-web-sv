@@ -1,7 +1,7 @@
 <script lang="ts">
-  import CardImage from "$lib/components/CardImage.svelte";
+  import CardImage from "#lib/components/CardImage.svelte";
   import { comment, repost } from "../../routes/api/messages/messages.remote";
-  import { repost as storeRepost } from "$lib/stores/message.js";
+  import { repost as storeRepost } from "#lib/stores/message.js";
   import type { VkMessage } from "../../models/types";
 
   const { message = $bindable() }: { message: VkMessage } = $props();

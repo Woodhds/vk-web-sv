@@ -1,8 +1,8 @@
 import { query } from "$app/server";
-import { getAccessToken } from "$lib/auth/auth";
-import { WallClient } from "$lib/client/wall-client";
-import { repository } from "$lib/database/messages";
-import { repository as userRepository } from "$lib/database/users";
+import { getAccessToken } from "#lib/auth/auth.js";
+import { WallClient } from "#lib/client/wall-client.js";
+import { repository } from "#lib/database/messages.js";
+import { repository as userRepository } from "#lib/database/users.js";
 import { error } from "@sveltejs/kit";
 import { parse } from "node-html-parser";
 import type { MessageEntity } from "../models/entities";
