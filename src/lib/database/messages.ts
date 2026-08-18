@@ -1,4 +1,4 @@
-import { sql } from "@vercel/postgres";
+import { sql } from "#lib/database/connection.ts";
 import type { MessageEntity } from "../../models/entities";
 
 class MessageRepository {
@@ -32,9 +32,15 @@ class MessageRepository {
   }
 
   async insert(message: MessageEntity) {
-    await sql`insert into messages (id, owner_id, date, text, reposted_from) VALUES (
-            ${message.id}, ${message.owner_id}, now(), ${message.text}, ${message.reposted_from})
-            ON CONFLICT (id, owner_id) DO NOTHING`;
+    await sql.query(
+      "insert into messages (id, owner_id, date, text, reposted_from) VALUES ($1, $2, now(), $3, $4) ON CONFLICT (id, owner_id) DO NOTHING",
+      [
+        message.id.toString(),
+        message.owner_id.toString(),
+        message.text,
+        message.reposted_from?.toString(),
+      ],
+    );
   }
 
   async migrate() {
@@ -60,7 +66,7 @@ class MessageRepository {
     //
     // await sql`CREATE INDEX IF NOT EXISTS idx_gin_messages_search on messages_search using gin(to_tsvector('russian', Text));`
 
-    await sql`
+    await sql.query(`
             CREATE OR REPLACE FUNCTION insert_to_search_table()
                 RETURNS TRIGGER
                 LANGUAGE PLPGSQL
@@ -72,7 +78,7 @@ class MessageRepository {
                 RETURN NEW;
                 END;
             $$;
-            `;
+            `);
     //
     // await sql` DROP TRIGGER IF EXISTS TR_messages_AI on messages;`
     //

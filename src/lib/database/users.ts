@@ -1,15 +1,15 @@
-import { sql } from "@vercel/postgres";
+import { sql } from "#lib/database/connection.ts";
 import type { UserEntity } from "../../models/entities";
 
 class UserRepository {
   async getIds(): Promise<number[]> {
-    const data = await sql`SELECT id FROM users`;
+    const data = await sql.query(`SELECT id FROM users`);
 
     return data.rows.map((row) => row.id);
   }
 
   async getAll(): Promise<UserEntity[]> {
-    const data = await sql`SELECT * FROM users`;
+    const data = await sql.query(`SELECT * FROM users`);
 
     return data.rows.map(
       (row) =>
@@ -18,11 +18,11 @@ class UserRepository {
   }
 
   async delete(id: number) {
-    await sql`DELETE FROM users WHERE id = ${id}`;
+    await sql.query(`DELETE FROM users WHERE id = ${id}`);
   }
 
   async add(id: number, name: string, avatar: string): Promise<void> {
-    await sql`insert into users (id, name, avatar) VALUES (${id}, ${name}, ${avatar})`
+    await sql.query(`insert into users (id, name, avatar) VALUES (${id}, ${name}, ${avatar})`);
   }
 }
 

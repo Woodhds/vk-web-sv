@@ -30,3 +30,5 @@ src/lib/tailwind/generated
 *.tgz
 vite.config.ts.timestamp-**.mjs
 .vscode
+.svelte-kit
+.vercel

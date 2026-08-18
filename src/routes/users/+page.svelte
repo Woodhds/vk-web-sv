@@ -11,8 +11,9 @@
     {/each}
   {:else}
     {#each users.current as user}
-      <form {...deleteUser} class="flex gap-4 items-center">
-        <input class="hidden" {...deleteUser.fields.id.as('number')} />
+      {@const userForm = deleteUser.for(user.id)}
+      <form {...userForm} class="flex gap-4 items-center">
+        <input class="hidden" {...userForm.fields.id.as('number')} />
         <a href="https://vk.com/id{user.id}" target="_blank">
           <img
             alt={user.name}
